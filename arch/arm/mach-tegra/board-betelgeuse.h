@@ -57,5 +57,7 @@ extern int betelgeuse_keyboard_register_devices(void);
 #define SHUTTLE_KEY_RESUME      TEGRA_GPIO_PV6  /* 0=pressed */
 #define SHUTTLE_KEY_SUSPEND     TEGRA_GPIO_PAA4 /* 0=pressed */
 #define SHUTTLE_KEY_BACK        TEGRA_GPIO_PH0  /* 0=pressed */
+#define SHUTTLE_FB_NONROTATE TEGRA_GPIO_PH1 /*1 = screen rotation locked */
+#define SW_ROTATION_LOCK        (SW_MAX-1)
 
 #endif

@@ -19,13 +19,21 @@
 #include <linux/input.h>
 
 #include <linux/gpio_keys.h>
-#include <linux/gpio_shortlong_key.h>
 
 #include <linux/gpio.h>
 #include <asm/mach-types.h>
 
 #include "board-betelgeuse.h"
 #include "gpio-names.h"
+
+struct gpio_shortlong_key_platform_data {
+        int                             gpio;                                   /* gpio to use to detect long presses */
+        int                                     active_low;                             /* 1 if key is active low */
+        int                                     debounce_time;                  /* time to recognize at least a short press in ms */
+        int                                     long_press_time;                /* time to recognize a long press in ms */
+        int                                     short_press_keycode;    /* short press key code */
+        int                                     long_press_keycode;             /* long press key code */
+};
 
 static struct gpio_keys_button betelgeuse_keys[] = {
 	[0] = {

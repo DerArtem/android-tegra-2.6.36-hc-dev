@@ -194,14 +194,6 @@ static struct tegra_i2c_platform_data betelgeuse_i2c2_platform_data = {
 	.bus_mux_len	= { 1, 1 },
 };
 
-/*
-static struct tegra_i2c_platform_data betelgeuse_i2c3_platform_data = {
-	.adapter_nr	= 3,
-	.bus_count	= 1,
-	.bus_clk_rate	= { 400000, 0 },
-};
-*/
-
 static struct tegra_i2c_platform_data betelgeuse_dvc_platform_data = {
 	.adapter_nr	= 4,
 	.bus_count	= 1,
@@ -229,7 +221,7 @@ static struct wm8903_platform_data wm8903_pdata = {
 	
 
 static struct i2c_board_info __initdata wm8903_device = {
-	I2C_BOARD_INFO("wm8903", 0x1a),
+	I2C_BOARD_INFO("wm8903", 0x34),
 	.platform_data = &wm8903_pdata,
 	.irq = TEGRA_GPIO_TO_IRQ(TEGRA_GPIO_CDC_IRQ),
 };
@@ -379,16 +371,15 @@ static struct tegra_das_platform_data tegra_das_pdata = {
 
 #define GPIO_TOUCH_IRQ          (32)
 
+//touch screen
 static struct eeti_ts_platform_data eeti_ts_pdata = {
         .irq_active_high = 1,
 };
 
 static struct i2c_board_info betelgeuse_controller_i2c_board_info __initdata = {
         .type   = "eeti_ts",
-        .addr   = 0x0a,
-        //.irq    = TEGRA_GPIO_TO_IRQ(GPIO_TOUCH_IRQ),
-        //.irq    = TEGRA_GPIO_TO_IRQ(20),
-	.irq	= TEGRA_GPIO_TO_IRQ(TEGRA_GPIO_PT4),
+        .addr   = 0x06,
+	.irq	= TEGRA_GPIO_TO_IRQ(TEGRA_GPIO_PD2),
         .platform_data = &eeti_ts_pdata,
 };
 
@@ -399,16 +390,14 @@ static void betelgeuse_i2c_init(void)
 
 	tegra_i2c_device1.dev.platform_data = &betelgeuse_i2c1_platform_data;
 	tegra_i2c_device2.dev.platform_data = &betelgeuse_i2c2_platform_data;
-	tegra_i2c_device3.dev.platform_data = &betelgeuse_i2c3_platform_data;
 	tegra_i2c_device4.dev.platform_data = &betelgeuse_dvc_platform_data;
 
 	platform_device_register(&tegra_i2c_device1);
 	platform_device_register(&tegra_i2c_device2);
-	platform_device_register(&tegra_i2c_device3);
 	platform_device_register(&tegra_i2c_device4);
 
 	i2c_register_board_info(1, &betelgeuse_controller_i2c_board_info, 1);
-	i2c_register_board_info(4, &betelgeuse_controller_i2c_board_info, 1);
+	//i2c_register_board_info(4, &betelgeuse_controller_i2c_board_info, 1);
 	//i2c_register_board_info(0, betelgeuse_i2c_bus1_board_info, ARRAY_SIZE(betelgeuse_i2c_bus1_board_info));
 }
 
