@@ -29,6 +29,7 @@
 #include <linux/i2c-tegra.h>
 #include <linux/gpio.h>
 #include <linux/gpio_keys.h>
+#include <linux/input/eeti_ts.h>
 #include <linux/io.h>
 #include <linux/delay.h>
 #include <linux/platform_data/tegra_usb.h>
@@ -193,11 +194,13 @@ static struct tegra_i2c_platform_data betelgeuse_i2c2_platform_data = {
 	.bus_mux_len	= { 1, 1 },
 };
 
+/*
 static struct tegra_i2c_platform_data betelgeuse_i2c3_platform_data = {
 	.adapter_nr	= 3,
 	.bus_count	= 1,
 	.bus_clk_rate	= { 400000, 0 },
 };
+*/
 
 static struct tegra_i2c_platform_data betelgeuse_dvc_platform_data = {
 	.adapter_nr	= 4,
@@ -374,6 +377,21 @@ static struct tegra_das_platform_data tegra_das_pdata = {
         }
 };
 
+#define GPIO_TOUCH_IRQ          (32)
+
+static struct eeti_ts_platform_data eeti_ts_pdata = {
+        .irq_active_high = 1,
+};
+
+static struct i2c_board_info betelgeuse_controller_i2c_board_info __initdata = {
+        .type   = "eeti_ts",
+        .addr   = 0x0a,
+        //.irq    = TEGRA_GPIO_TO_IRQ(GPIO_TOUCH_IRQ),
+        //.irq    = TEGRA_GPIO_TO_IRQ(20),
+	.irq	= TEGRA_GPIO_TO_IRQ(TEGRA_GPIO_PT4),
+        .platform_data = &eeti_ts_pdata,
+};
+
 static void betelgeuse_i2c_init(void)
 {
 	i2c_register_board_info(0, &wm8903_device, 1);
@@ -388,7 +406,9 @@ static void betelgeuse_i2c_init(void)
 	platform_device_register(&tegra_i2c_device2);
 	platform_device_register(&tegra_i2c_device3);
 	platform_device_register(&tegra_i2c_device4);
-	
+
+	i2c_register_board_info(1, &betelgeuse_controller_i2c_board_info, 1);
+	i2c_register_board_info(4, &betelgeuse_controller_i2c_board_info, 1);
 	//i2c_register_board_info(0, betelgeuse_i2c_bus1_board_info, ARRAY_SIZE(betelgeuse_i2c_bus1_board_info));
 }
 
@@ -412,13 +432,8 @@ static void __init tegra_betelgeuse_fixup(struct machine_desc *desc,
 	struct tag *tags, char **cmdline, struct meminfo *mi)
 {
 	mi->nr_banks = 1;
-	//mi->bank[0].start = PHYS_OFFSET;
-	//mi->bank[0].size = 448 * SZ_1M;
 	mi->bank[0].size  = SHUTTLE_MEM_SIZE;
 	mi->bank[0].size  = SHUTTLE_MEM_SIZE - SHUTTLE_GPU_MEM_SIZE;
-	
-	//mi->bank[1].start = SZ_512M;
-	//mi->bank[1].size = SZ_512M;
 }
 
 static __initdata struct tegra_clk_init_table betelgeuse_clk_init_table[] = {
