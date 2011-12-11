@@ -23,6 +23,7 @@ int betelgeuse_power_init(void);
 int betelgeuse_panel_init(void);
 int betelgeuse_sdhci_init(void);
 void betelgeuse_emc_init(void);
+extern int betelgeuse_keyboard_register_devices(void);
 
 /* TPS6586X gpios */
 #define TPS6586X_GPIO_BASE      TEGRA_NR_GPIOS
@@ -49,5 +50,12 @@ void betelgeuse_emc_init(void);
 
 #define SHUTTLE_MEM_SIZE	SZ_512M			/* Total memory */
 #define SHUTTLE_GPU_MEM_SIZE	SZ_128M			/* Memory reserved for GPU */
+
+#define SHUTTLE_KEY_VOLUMEUP    TEGRA_GPIO_PB1  /* 0=pressed */
+#define SHUTTLE_KEY_VOLUMEDOWN  TEGRA_GPIO_PK7  /* 0=pressed */
+#define SHUTTLE_KEY_POWER       TEGRA_GPIO_PV2  /* 0=pressed */
+#define SHUTTLE_KEY_RESUME      TEGRA_GPIO_PV6  /* 0=pressed */
+#define SHUTTLE_KEY_SUSPEND     TEGRA_GPIO_PAA4 /* 0=pressed */
+#define SHUTTLE_KEY_BACK        TEGRA_GPIO_PH0  /* 0=pressed */
 
 #endif

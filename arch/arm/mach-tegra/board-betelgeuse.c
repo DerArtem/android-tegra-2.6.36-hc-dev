@@ -677,6 +677,7 @@ static void __init tegra_betelgeuse_init(void)
 	betelgeuse_pinmux_init();
 
 	betelgeuse_ehci_init();
+	betelgeuse_keyboard_register_devices();
 
 	//tegra_i2s_device1.dev.platform_data = &tegra_audio_pdata;
 	tegra_i2s_device1.dev.platform_data = &tegra_audio_pdata[0];
