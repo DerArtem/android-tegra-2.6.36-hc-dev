@@ -84,13 +84,14 @@ static struct regulator_consumer_supply tps658621_ldo4_supply[] = {
 	REGULATOR_SUPPLY("tmon1.8vs", NULL),
 	REGULATOR_SUPPLY("vddhostif_bt", NULL),
 	REGULATOR_SUPPLY("wifi3vs", NULL),
-	REGULATOR_SUPPLY("vddio_sys", "panjit_touch"),
+	//REGULATOR_SUPPLY("vddio_sys", "panjit_touch"),
 };
 
 static struct regulator_consumer_supply tps658621_ldo6_supply[] = {
 	REGULATOR_SUPPLY("vddio vdac", NULL),
 	REGULATOR_SUPPLY("avdd_vdac", NULL),
-	REGULATOR_SUPPLY("vmic", "soc-audio"),
+	REGULATOR_SUPPLY("vmic", NULL),
+	//REGULATOR_SUPPLY("vmic", "soc-audio"),
 };
 static struct regulator_consumer_supply tps658621_ldo7_supply[] = {
 	REGULATOR_SUPPLY("avdd_hdmi", NULL),
