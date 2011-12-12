@@ -153,6 +153,12 @@ config TOUCHSCREEN_EETI
 	  To compile this driver as a module, choose M here: the
 	  module will be called eeti_ts.
 
+config TOUCHSCREEN_EGALAX_I2C
+        boolean "eGalax I2C based touchscreen driver"
+        depends on I2C
+        help
+          This enables support for eGalax over I2C based touchscreens.
+
 config TOUCHSCREEN_FUJITSU
 	tristate "Fujitsu serial touchscreen"
 	select SERIO

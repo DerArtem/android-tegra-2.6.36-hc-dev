@@ -30,6 +30,7 @@
 #include <linux/gpio.h>
 #include <linux/gpio_keys.h>
 #include <linux/input/eeti_ts.h>
+#include <linux/i2c/panjit_ts.h>
 #include <linux/io.h>
 #include <linux/delay.h>
 #include <linux/platform_data/tegra_usb.h>
@@ -221,7 +222,7 @@ static struct wm8903_platform_data wm8903_pdata = {
 	
 
 static struct i2c_board_info __initdata wm8903_device = {
-	I2C_BOARD_INFO("wm8903", 0x34),
+	I2C_BOARD_INFO("wm8903", 0x1a),
 	.platform_data = &wm8903_pdata,
 	.irq = TEGRA_GPIO_TO_IRQ(TEGRA_GPIO_CDC_IRQ),
 };
@@ -372,16 +373,59 @@ static struct tegra_das_platform_data tegra_das_pdata = {
 #define GPIO_TOUCH_IRQ          (32)
 
 //touch screen
+//
+
+static const struct i2c_board_info betelgeuse_i2c_bus1_touch_info[] = {
+	{
+		I2C_BOARD_INFO("egalax_i2c", 0x4),
+		.irq = TEGRA_GPIO_TO_IRQ(TEGRA_GPIO_PD2),
+	},
+};
+
+static int __init betelgeuse_touch_init_egalax(void)
+{
+	//tegra_gpio_enable(TEGRA_GPIO_PV6);
+	tegra_gpio_enable(TEGRA_GPIO_PD2);
+	i2c_register_board_info(0, betelgeuse_i2c_bus1_touch_info, 1);
+	return 0;
+}
+
+/*
 static struct eeti_ts_platform_data eeti_ts_pdata = {
         .irq_active_high = 1,
 };
 
 static struct i2c_board_info betelgeuse_controller_i2c_board_info __initdata = {
         .type   = "eeti_ts",
-        .addr   = 0x06,
+        .addr   = 0x03,
 	.irq	= TEGRA_GPIO_TO_IRQ(TEGRA_GPIO_PD2),
         .platform_data = &eeti_ts_pdata,
 };
+*/
+
+/*
+static struct panjit_i2c_ts_platform_data panjit_data = {
+        .gpio_reset = TEGRA_GPIO_PQ7,
+};
+
+static const struct i2c_board_info betelgeuse_i2c_bus1_touch_info[] = {
+        {
+         I2C_BOARD_INFO("panjit_touch", 0x3),
+         .irq = TEGRA_GPIO_TO_IRQ(TEGRA_GPIO_PD2),
+         .platform_data = &panjit_data,
+         },
+};
+
+static int __init betelgeuse_touch_init_panjit(void)
+{
+        tegra_gpio_enable(TEGRA_GPIO_PD2);
+
+        //tegra_gpio_enable(TEGRA_GPIO_PQ7);
+        i2c_register_board_info(0, betelgeuse_i2c_bus1_touch_info, 1);
+
+        return 0;
+}
+*/
 
 static void betelgeuse_i2c_init(void)
 {
@@ -396,7 +440,8 @@ static void betelgeuse_i2c_init(void)
 	platform_device_register(&tegra_i2c_device2);
 	platform_device_register(&tegra_i2c_device4);
 
-	i2c_register_board_info(1, &betelgeuse_controller_i2c_board_info, 1);
+	tegra_gpio_enable(TEGRA_GPIO_PD2);
+	//i2c_register_board_info(1, &betelgeuse_controller_i2c_board_info, 1);
 	//i2c_register_board_info(4, &betelgeuse_controller_i2c_board_info, 1);
 	//i2c_register_board_info(0, betelgeuse_i2c_bus1_board_info, ARRAY_SIZE(betelgeuse_i2c_bus1_board_info));
 }
@@ -666,7 +711,8 @@ static void __init tegra_betelgeuse_init(void)
 	betelgeuse_pinmux_init();
 
 	betelgeuse_ehci_init();
-	betelgeuse_keyboard_register_devices();
+	betelgeuse_i2c_init();
+	//betelgeuse_keyboard_register_devices();
 
 	//tegra_i2s_device1.dev.platform_data = &tegra_audio_pdata;
 	tegra_i2s_device1.dev.platform_data = &tegra_audio_pdata[0];
@@ -678,7 +724,8 @@ static void __init tegra_betelgeuse_init(void)
 
 	betelgeuse_panel_init();
 	betelgeuse_sdhci_init();
-	betelgeuse_i2c_init();
+	//betelgeuse_touch_init_panjit();
+	betelgeuse_touch_init_egalax();
 	betelgeuse_power_init();
 }
 

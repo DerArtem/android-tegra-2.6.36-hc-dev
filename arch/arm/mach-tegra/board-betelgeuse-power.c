@@ -84,6 +84,7 @@ static struct regulator_consumer_supply tps658621_ldo4_supply[] = {
 	REGULATOR_SUPPLY("tmon1.8vs", NULL),
 	REGULATOR_SUPPLY("vddhostif_bt", NULL),
 	REGULATOR_SUPPLY("wifi3vs", NULL),
+	REGULATOR_SUPPLY("vddio_sys", "panjit_touch"),
 };
 
 static struct regulator_consumer_supply tps658621_ldo6_supply[] = {
@@ -196,7 +197,7 @@ static struct tps6586x_platform_data tps_platform = {
 
 static struct i2c_board_info __initdata betelgeuse_regulators[] = {
 	{
-		I2C_BOARD_INFO("tps6586x", 0x68),
+		I2C_BOARD_INFO("tps6586x", 0x34),
 		.platform_data = &tps_platform,
 	},
 };
