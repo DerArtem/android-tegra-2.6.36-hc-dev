@@ -72,44 +72,6 @@
 #define ATAG_NVIDIA_PRESERVED_MEM_N	2
 #define ATAG_NVIDIA_FORCE_32		0x7fffffff
 
-static char *usb_functions[] = { "mtp" };
-static char *usb_functions_adb[] = { "mtp", "adb" };
-//static char *usb_functions_adb[] = { "usb_mass_storage", "adb", "acm" };
-
-static struct android_usb_product usb_products[] = {
-        {
-                .product_id     = 0x7102,
-                .num_functions  = ARRAY_SIZE(usb_functions),
-                .functions      = usb_functions,
-        },
-        {
-                .product_id     = 0x7100,
-                .num_functions  = ARRAY_SIZE(usb_functions_adb),
-                .functions      = usb_functions_adb,
-        },
-};
-
-/* standard android USB platform data */
-static struct android_usb_platform_data andusb_plat = {
-        .vendor_id              = 0x0955,
-        .product_id             = 0x7100,
-        .manufacturer_name      = "Toshiba",
-        .product_name           = "Folio 100",
-        .serial_number          = NULL,
-        .num_products = ARRAY_SIZE(usb_products),
-        .products = usb_products,
-        .num_functions = ARRAY_SIZE(usb_functions_adb),
-        .functions = usb_functions_adb,
-};
-
-static struct platform_device androidusb_device = {
-        .name   = "android_usb",
-        .id     = -1,
-        .dev    = {
-                .platform_data  = &andusb_plat,
-        },
-};
-
 struct tag_tegra {
 	__u32 bootarg_key;
 	__u32 bootarg_len;
@@ -121,22 +83,6 @@ static int __init parse_tag_nvidia(const struct tag *tag)
 	return 0;
 }
 __tagtable(ATAG_NVIDIA, parse_tag_nvidia);
-
-static struct tegra_utmip_config utmi_phy_config = {
-	.hssync_start_delay = 0,
-	.idle_wait_delay = 17,
-	.elastic_limit = 16,
-	.term_range_adj = 6,
-	.xcvr_setup = 9,
-	.xcvr_lsfslew = 2,
-	.xcvr_lsrslew = 2,
-};
-
-static struct tegra_ehci_platform_data tegra_ehci_pdata = {
-	.phy_config = &utmi_phy_config,
-	.operating_mode = TEGRA_USB_HOST,
-	.power_down_on_bus_suspend = 1,
-};
 
 static struct plat_serial8250_port debug_uart_platform_data[] = {
 	{
@@ -672,37 +618,6 @@ static struct tegra_suspend_platform_data shuttle_suspend = {
         #endif
 };*/
 
-static int betelgeuse_ehci_init(void)
-{
-        int gpio_status;
-
-        gpio_status = gpio_request(TEGRA_GPIO_USB1, "VBUS_USB1");
-        if (gpio_status < 0) {
-                pr_err("VBUS_USB1 request GPIO FAILED\n");
-                WARN_ON(1);
-        }
-        tegra_gpio_enable(TEGRA_GPIO_USB1);
-        gpio_status = gpio_direction_output(TEGRA_GPIO_USB1, 1);
-        if (gpio_status < 0) {
-                pr_err("VBUS_USB1 request GPIO DIRECTION FAILED\n");
-                WARN_ON(1);
-        }
-        gpio_set_value(TEGRA_GPIO_USB1, 1);
-	
-	tegra_ehci3_device.dev.platform_data = &tegra_ehci_pdata;
-	/*
-        tegra_ehci1_device.dev.platform_data = &tegra_ehci_pdata[0];
-        tegra_ehci2_device.dev.platform_data = &tegra_ehci_pdata[1];
-        tegra_ehci3_device.dev.platform_data = &tegra_ehci_pdata[2];
-
-        platform_device_register(&tegra_ehci1_device);
-        platform_device_register(&tegra_ehci2_device);
-        platform_device_register(&tegra_ehci3_device);
-	*/
-
-        return 0;
-}
-
 #ifdef CONFIG_KEYBOARD_GPIO
 #define GPIO_KEY(_id, _gpio, _iswake) \
 { \
@@ -784,14 +699,12 @@ static struct platform_device betelgeuse_gpio_keys_device = {
 */
 
 static struct platform_device *betelgeuse_devices[] __initdata = {
-        &androidusb_device,
         &debug_uart,
         &pmu_device,
         &tegra_udc_device,
         &pda_power_device,
         //&betelgeuse_gpio_keys_device,
 	&antares_keys_device,
-        &tegra_ehci3_device,
         &tegra_spi_device1,
         &tegra_spi_device2,
         &tegra_spi_device3,
@@ -813,7 +726,6 @@ static void __init tegra_betelgeuse_init(void)
 
 	betelgeuse_pinmux_init();
 
-	betelgeuse_ehci_init();
 	betelgeuse_i2c_init();
 	//betelgeuse_keyboard_register_devices();
 
@@ -828,6 +740,7 @@ static void __init tegra_betelgeuse_init(void)
 	betelgeuse_panel_init();
 	//betelgeuse_kbc_init();
 	betelgeuse_sdhci_init();
+	betelgeuse_usb_init();
 	antares_keys_init();
 	betelgeuse_touch_init_egalax();
 	betelgeuse_power_init();

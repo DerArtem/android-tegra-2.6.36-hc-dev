@@ -25,6 +25,7 @@ int betelgeuse_sdhci_init(void);
 void betelgeuse_emc_init(void);
 int betelgeuse_kbc_init(void);
 extern int betelgeuse_keyboard_register_devices(void);
+int __init betelgeuse_usb_init(void);
 
 /* TPS6586X gpios */
 #define TPS6586X_GPIO_BASE      TEGRA_NR_GPIOS

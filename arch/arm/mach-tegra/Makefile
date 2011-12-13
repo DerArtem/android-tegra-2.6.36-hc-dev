@@ -88,3 +88,4 @@ obj-${CONFIG_MACH_BETELGEUSE}           += board-betelgeuse-power.o
 obj-${CONFIG_MACH_BETELGEUSE}           += board-betelgeuse-sdhci.o
 obj-${CONFIG_MACH_BETELGEUSE}           += board-betelgeuse-memory.o
 obj-${CONFIG_MACH_BETELGEUSE}           += board-betelgeuse-kbc.o
+obj-${CONFIG_MACH_BETELGEUSE}           += board-betelgeuse-usb.o
