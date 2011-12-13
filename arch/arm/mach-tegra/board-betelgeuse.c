@@ -689,19 +689,6 @@ static void __init tegra_betelgeuse_init(void)
 	betelgeuse_power_init();
 }
 
-/*
-MACHINE_START(HARMONY, "harmony")
-	.boot_params  = 0x00000100,
-	.phys_io        = IO_APB_PHYS,
-	.io_pg_offst    = ((IO_APB_VIRT) >> 18) & 0xfffc,
-	.fixup		= tegra_betelgeuse_fixup,
-	.init_irq       = tegra_init_irq,
-	.init_machine   = tegra_betelgeuse_init,
-	.map_io         = tegra_map_common_io,
-	.timer          = &tegra_timer,
-MACHINE_END
-*/
-
 MACHINE_START(TEGRA_LEGACY, "tegra_legacy")
 	.boot_params  = 0x00000100,
 	.phys_io        = IO_APB_PHYS,
