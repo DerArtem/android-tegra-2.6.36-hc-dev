@@ -560,6 +560,7 @@ static __initdata struct tegra_clk_init_table betelgeuse_clk_init_table[] = {
         { NULL,         NULL,           0,              0},
 */
 
+/*
         { "clk_m",      NULL,           0,              true },
         { "pll_m",      "clk_m",        600000000,      true },
         { "pll_p",      "clk_m",        216000000,      true },
@@ -578,9 +579,9 @@ static __initdata struct tegra_clk_init_table betelgeuse_clk_init_table[] = {
         { "kfuse",      NULL,           0,              true },
         { "fuse",       NULL,           0,              true },
         { "rtc",        NULL,           0,              true },
-
+*/
         /* set frequencies of some device clocks */
-        { "pll_u",      "clk_m",        480000000,      false },
+/*        { "pll_u",      "clk_m",        480000000,      false },
         { "sdmmc1",     "pll_p",        48000000,       false},
         { "sdmmc2",     "pll_p",        48000000,       false},
         { "sdmmc3",     "pll_p",        48000000,       false},
@@ -602,6 +603,24 @@ static __initdata struct tegra_clk_init_table betelgeuse_clk_init_table[] = {
         { "spdif_out",  "pll_a_out0",   5644800,        false},
         { "kbc",        "clk_32k",      32768,          true},
         { NULL,         NULL,           0,              0},
+*/
+
+	/* name parent rate enabled */
+	{ "uartd", "pll_p", 216000000, true},
+	{ "uartc", "pll_m", 600000000, false},
+	{ "blink", "clk_32k", 32768, false},
+	{ "pll_p_out4", "pll_p", 24000000, true },
+	/*{ "pwm", "clk_32k", 32768, false},*/
+	{ "pwm", "clk_m", 12000000, false},
+	{ "pll_a", NULL, 56448000, false},
+	{ "pll_a_out0", NULL, 11289600, false},
+	{ "i2s1", "pll_a_out0", 11289600, false},
+	{ "i2s2", "pll_a_out0", 11289600, false},
+	{ "audio", "pll_a_out0", 11289600, false},
+	{ "audio_2x", "audio", 22579200, false},
+	{ "spdif_out", "pll_a_out0", 5644800, false},
+	{ "kbc", "clk_32k", 32768, true},
+	{ NULL, NULL, 0, 0},
 };
 
 /*
