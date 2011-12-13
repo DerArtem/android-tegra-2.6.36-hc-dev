@@ -23,6 +23,7 @@ int betelgeuse_power_init(void);
 int betelgeuse_panel_init(void);
 int betelgeuse_sdhci_init(void);
 void betelgeuse_emc_init(void);
+int betelgeuse_kbc_init(void);
 extern int betelgeuse_keyboard_register_devices(void);
 
 /* TPS6586X gpios */
@@ -43,7 +44,6 @@ extern int betelgeuse_keyboard_register_devices(void);
 
 #define TEGRA_GPIO_USB1		TEGRA_GPIO_PU3
 #define TEGRA_GPIO_MAGNETOMETER	TEGRA_GPIO_PV1
-#define TEGRA_GPIO_CDC_IRQ	TEGRA_GPIO_PW2
 
 #define SHUTTLE_FB_PAGES        2			/* At least, 2 video pages */
 #define SHUTTLE_FB_HDMI_PAGES   2			/* At least, 2 video pages for HDMI */
