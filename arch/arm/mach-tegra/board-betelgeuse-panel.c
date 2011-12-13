@@ -148,10 +148,8 @@ static struct resource betelgeuse_disp1_resources[] = {
 	},
 	{
 		.name	= "fbmem",
-		//.start	= 0x1c012000,
 		.start  = SHUTTLE_FB_BASE,
 		.end    = SHUTTLE_FB_BASE + SHUTTLE_FB_SIZE - 1,
-		//.end    = 0x1c012000 + 0x258000 - 1,   /* 2.4 MB @ 448 MB */
 		.flags	= IORESOURCE_MEM,
 	},
 };
@@ -174,8 +172,6 @@ static struct resource betelgeuse_disp2_resources[] = {
                 .flags  = IORESOURCE_MEM,
 		.start  = SHUTTLE_FB_HDMI_BASE,
 		.end    = SHUTTLE_FB_HDMI_BASE + SHUTTLE_FB_HDMI_SIZE - 1,
-		//.start  = 0x1c26A000,
-		//.end    = 0x1c26A000 + 0x500000 - 1,  /* 5 MB */
         },
         {
                 .name   = "hdmi_regs",
@@ -219,40 +215,6 @@ static struct tegra_dc_mode betelgeuse_panel_modes[] = {
 };
 */
 
-/*
-static struct tegra_dc_mode betelgeuse_panel_modes[] = {
-        {
-                .pclk = 72072000,
-                .h_ref_to_sync = 11,
-                .v_ref_to_sync = 1,
-                .h_sync_width = 58,
-                .v_sync_width = 4,
-                .h_back_porch = 58,
-                .v_back_porch = 4,
-                .h_active = 1366,
-                .v_active = 768,
-                .h_front_porch = 58,
-                .v_front_porch = 4,
-        },
-};
-*/
-
-/*
-static struct tegra_fb_data betelgeuse_fb_data = {
-        .win            = 0,
-        .xres           = 1366,
-        .yres           = 768,
-        .bits_per_pixel = 32,
-};
-
-static struct tegra_fb_data betelgeuse_hdmi_fb_data = {
-        .win            = 0,
-        .xres           = 1366,
-        .yres           = 768,
-        .bits_per_pixel = 32,
-};
-*/
-
 static struct tegra_fb_data betelgeuse_fb_data = {
 	.win		= 0,
 	.xres		= 1024,
@@ -283,23 +245,6 @@ static struct tegra_dc_out betelgeuse_disp1_out = {
 	.disable	= betelgeuse_panel_disable,
 };
 
-/*
-static struct tegra_dc_out betelgeuse_disp1_out = {
-        .type           = TEGRA_DC_OUT_RGB,
-
-        .align          = TEGRA_DC_ALIGN_MSB,
-        .order          = TEGRA_DC_ORDER_RED_BLUE,
-        .depth          = 18,
-        .dither         = TEGRA_DC_ORDERED_DITHER,
-
-        .modes          = betelgeuse_panel_modes,
-        .n_modes        = ARRAY_SIZE(betelgeuse_panel_modes),
-
-        .enable         = betelgeuse_panel_enable,
-        .disable        = betelgeuse_panel_disable,
-};
-*/
-
 static struct tegra_dc_out betelgeuse_disp2_out = {
         .type           = TEGRA_DC_OUT_HDMI,
         .flags          = TEGRA_DC_OUT_HOTPLUG_HIGH,
@@ -316,7 +261,7 @@ static struct tegra_dc_out betelgeuse_disp2_out = {
 
 static struct tegra_dc_platform_data betelgeuse_disp1_pdata = {
 	.flags		= TEGRA_DC_FLAG_ENABLED,
-	.emc_clk_rate	= 300000000,
+//	.emc_clk_rate	= 300000000,
 	.default_out	= &betelgeuse_disp1_out,
 	.fb		= &betelgeuse_fb_data,
 };
@@ -347,25 +292,6 @@ static struct nvhost_device betelgeuse_disp2_device = {
         },
 };
 
-/*
-static struct nvmap_platform_carveout betelgeuse_carveouts[] = {
-	[0] = {
-		.name		= "iram",
-		.usage_mask	= NVMAP_HEAP_CARVEOUT_IRAM,
-		.base		= TEGRA_IRAM_BASE,
-		.size		= TEGRA_IRAM_SIZE,
-		.buddy_size	= 0, */ /* no buddy allocation for IRAM */
-/*	},
-	[1] = {
-		.name		= "generic-0",
-		.usage_mask	= NVMAP_HEAP_CARVEOUT_GENERIC,
-		.base		= 0x18C00000,
-		.size		= SZ_128M - 0xC00000,
-		.buddy_size	= SZ_32K,
-	},
-};
-*/
-
 static struct nvmap_platform_carveout betelgeuse_carveouts[] = {
         [0] = {
                 .name           = "iram",
@@ -377,10 +303,8 @@ static struct nvmap_platform_carveout betelgeuse_carveouts[] = {
         [1] = {
                 .name           = "generic-0",
                 .usage_mask     = NVMAP_HEAP_CARVEOUT_GENERIC,
-                //.base           = 0x1C000000,   /* carveout starts at 448 */
 		.base		= SHUTTLE_CARVEOUT_BASE,
 		.size		= SHUTTLE_CARVEOUT_SIZE,
-                //.size           = SZ_64M - 0xC00000,
                 .buddy_size     = SZ_32K,
         },
 };
