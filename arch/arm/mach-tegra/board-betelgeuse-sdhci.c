@@ -67,6 +67,7 @@ static struct resource sdhci_resource4[] = {
 	},
 };
 
+//Wifi
 static struct tegra_sdhci_platform_data tegra_sdhci_platform_data1 = {
 	.clk_id = NULL,
 	.force_hs = 1,
@@ -75,6 +76,7 @@ static struct tegra_sdhci_platform_data tegra_sdhci_platform_data1 = {
 	.power_gpio = -1,
 };
 
+//External SD
 static struct tegra_sdhci_platform_data tegra_sdhci_platform_data2 = {
 	.clk_id = NULL,
 	.force_hs = 1,
@@ -83,6 +85,7 @@ static struct tegra_sdhci_platform_data tegra_sdhci_platform_data2 = {
 	.power_gpio = TEGRA_GPIO_PT3,
 };
 
+// Internal SD
 static struct tegra_sdhci_platform_data tegra_sdhci_platform_data4 = {
 	.clk_id = NULL,
 	.force_hs = 0,
@@ -143,8 +146,8 @@ int __init betelgeuse_sdhci_init(void)
 	gpio_direction_output(tegra_sdhci_platform_data4.power_gpio, 1);
 
 	platform_device_register(&tegra_sdhci_device1);
-	platform_device_register(&tegra_sdhci_device2);
 	platform_device_register(&tegra_sdhci_device4);
+	platform_device_register(&tegra_sdhci_device2);
 
 	return 0;
 }
