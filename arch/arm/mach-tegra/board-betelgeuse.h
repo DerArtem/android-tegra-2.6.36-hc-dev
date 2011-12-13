@@ -43,7 +43,6 @@ extern int betelgeuse_keyboard_register_devices(void);
 #define TPS6586X_INT_END        (TPS6586X_INT_BASE + 32)
 
 #define TEGRA_GPIO_USB1		TEGRA_GPIO_PU3
-#define TEGRA_GPIO_MAGNETOMETER	TEGRA_GPIO_PV1
 
 #define SHUTTLE_FB_PAGES        2			/* At least, 2 video pages */
 #define SHUTTLE_FB_HDMI_PAGES   2			/* At least, 2 video pages for HDMI */
