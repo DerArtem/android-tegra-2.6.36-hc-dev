@@ -43,9 +43,11 @@ static struct regulator_consumer_supply tps658621_sm2_supply[] = {
 	REGULATOR_SUPPLY("vdd_sm2", NULL),
 };
 static struct regulator_consumer_supply tps658621_ldo0_supply[] = { /* VDDIO_PEX_CLK */
+	REGULATOR_SUPPLY("vdd_ldo0", NULL),
 	REGULATOR_SUPPLY("pex_clk", NULL),
 };
 static struct regulator_consumer_supply tps658621_ldo1_supply[] = { /* 1V2 */
+	REGULATOR_SUPPLY("vdd_ldo1", NULL),
 	REGULATOR_SUPPLY("pll_a", NULL),
 	REGULATOR_SUPPLY("pll_m", NULL),
 	REGULATOR_SUPPLY("pll_p", NULL),
@@ -56,8 +58,8 @@ static struct regulator_consumer_supply tps658621_ldo1_supply[] = { /* 1V2 */
 	REGULATOR_SUPPLY("pll_x", NULL),
 };
 static struct regulator_consumer_supply tps658621_ldo2_supply[] = { /* VDD_RTC */
+	REGULATOR_SUPPLY("vdd_ldo2", NULL),
 	REGULATOR_SUPPLY("vdd_rtc", NULL),
-	REGULATOR_SUPPLY("vdd_aon", NULL), /////////// CHECK THIS
 };
 
 // Check below
@@ -75,6 +77,7 @@ static struct regulator_consumer_supply tps658621_ldo3_supply[] = { /* 3V3 */
 };
 
 static struct regulator_consumer_supply tps658621_ldo4_supply[] = { 
+	REGULATOR_SUPPLY("vdd_ldo4", NULL),
 	REGULATOR_SUPPLY("avdd_osc", NULL),       /* AVDD_OSC */
 	REGULATOR_SUPPLY("vddio_sys", NULL),
 	REGULATOR_SUPPLY("vddio_lcd", NULL),      /* AON? */
@@ -85,10 +88,12 @@ static struct regulator_consumer_supply tps658621_ldo4_supply[] = {
 	REGULATOR_SUPPLY("tmon1.8vs", NULL),
 	REGULATOR_SUPPLY("vddhostif_bt", NULL),
 	REGULATOR_SUPPLY("wifi3vs", NULL),
+	REGULATOR_SUPPLY("vdd_aon", NULL),
 	//REGULATOR_SUPPLY("vddio_sys", "panjit_touch"),
 };
 
 static struct regulator_consumer_supply tps658621_ldo6_supply[] = {
+	REGULATOR_SUPPLY("vdd_ldo6", NULL),
 	REGULATOR_SUPPLY("vddio vdac", NULL),
 	REGULATOR_SUPPLY("avdd_vdac", NULL),
 	REGULATOR_SUPPLY("vmic", NULL),
@@ -97,7 +102,6 @@ static struct regulator_consumer_supply tps658621_ldo6_supply[] = {
 static struct regulator_consumer_supply tps658621_ldo7_supply[] = {
 	REGULATOR_SUPPLY("vdd_ldo7", NULL),
 	REGULATOR_SUPPLY("avdd_hdmi", NULL),
-	REGULATOR_SUPPLY("vdd_fuse", NULL),
 };
 static struct regulator_consumer_supply tps658621_ldo8_supply[] = { /* AVDD_HDMI_PLL */
 	REGULATOR_SUPPLY("vdd_ldo8", NULL),
@@ -105,9 +109,7 @@ static struct regulator_consumer_supply tps658621_ldo8_supply[] = { /* AVDD_HDMI
 };
 static struct regulator_consumer_supply tps658621_ldo9_supply[] = {
 	REGULATOR_SUPPLY("vdd_ldo9", NULL),
-	REGULATOR_SUPPLY("avdd_2v85", NULL),
 	REGULATOR_SUPPLY("vdd_ddr_rx", NULL),
-	REGULATOR_SUPPLY("avdd_amp", NULL),
 };
 
 /*

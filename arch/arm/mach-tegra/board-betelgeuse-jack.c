@@ -1,5 +1,5 @@
 /*
- * arch/arm/mach-tegra/board-antares-jack.c
+ * arch/arm/mach-tegra/board-betelgeuse-jack.c
  *
  * Copyright (c) 2011, NVIDIA Corporation.
  *
@@ -28,23 +28,20 @@
 #include "gpio-names.h"
 #include "board-betelgeuse.h"
 
-static struct tegra_wired_jack_conf antares_wr_jack_conf = {
+static struct tegra_wired_jack_conf betelgeuse_wr_jack_conf = {
 	.hp_det_n = TEGRA_GPIO_PW2,
 	.en_mic_ext = TEGRA_GPIO_PX1,
 	.en_mic_int = TEGRA_GPIO_PX0,
 	.en_spkr = WM8903_GP3,
-	.cdc_irq = TEGRA_GPIO_PX0,
-	//.en_spk_ext = TEGRA_GPIO_PL7,
-	//.en_spk_int = TEGRA_GPIO_PL6,
-	//.ext_hp_det = TEGRA_GPIO_PL0,
-	.spkr_amp_reg = "avdd_amp"
+	.cdc_irq = TEGRA_GPIO_PX3,
+	//.spkr_amp_reg = "avdd_amp"
 };
 
-static struct platform_device antares_hs_jack_device = {
+static struct platform_device betelgeuse_hs_jack_device = {
 	.name = "tegra_wired_jack",
 	.id = -1,
 	.dev = {
-		.platform_data = &antares_wr_jack_conf,
+		.platform_data = &betelgeuse_wr_jack_conf,
 	},
 };
 
@@ -52,15 +49,12 @@ int __init betelgeuse_wired_jack_init(void)
 {
 	int ret;
 
-	tegra_gpio_enable(antares_wr_jack_conf.hp_det_n);
-	tegra_gpio_enable(antares_wr_jack_conf.en_mic_ext);
-	tegra_gpio_enable(antares_wr_jack_conf.en_mic_int);
-	tegra_gpio_enable(antares_wr_jack_conf.en_spkr);
-	tegra_gpio_enable(antares_wr_jack_conf.cdc_irq);
-	//tegra_gpio_enable(antares_wr_jack_conf.en_spk_ext);
-	//tegra_gpio_enable(antares_wr_jack_conf.en_spk_int);
-	//tegra_gpio_enable(antares_wr_jack_conf.ext_hp_det);
+	tegra_gpio_enable(betelgeuse_wr_jack_conf.hp_det_n);
+	tegra_gpio_enable(betelgeuse_wr_jack_conf.en_mic_ext);
+	tegra_gpio_enable(betelgeuse_wr_jack_conf.en_mic_int);
+	tegra_gpio_enable(betelgeuse_wr_jack_conf.en_spkr);
+	tegra_gpio_enable(betelgeuse_wr_jack_conf.cdc_irq);
 
-	ret = platform_device_register(&antares_hs_jack_device);
+	ret = platform_device_register(&betelgeuse_hs_jack_device);
 	return ret;
 }
