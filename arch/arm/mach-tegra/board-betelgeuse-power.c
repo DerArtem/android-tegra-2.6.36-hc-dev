@@ -110,6 +110,7 @@ static struct regulator_consumer_supply tps658621_ldo8_supply[] = { /* AVDD_HDMI
 static struct regulator_consumer_supply tps658621_ldo9_supply[] = {
 	REGULATOR_SUPPLY("vdd_ldo9", NULL),
 	REGULATOR_SUPPLY("vdd_ddr_rx", NULL),
+	//REGULATOR_SUPPLY("avdd_amp", NULL),
 };
 
 /*
