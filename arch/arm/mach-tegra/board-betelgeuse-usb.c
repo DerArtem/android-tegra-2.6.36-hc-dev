@@ -341,8 +341,8 @@ static struct platform_device *betelgeuse_usb_devices[] __initdata = {
 int __init betelgeuse_usb_init(void)
 {
 	pr_info("KBC: betelgeuse_usb_init\n");
-	//snprintf(usb_serial_num, sizeof(usb_serial_num), "%llx", tegra_chip_uid());
-        //andusb_plat.serial_number = kstrdup(usb_serial_num, GFP_KERNEL);
+	snprintf(usb_serial_num, sizeof(usb_serial_num), "%llx", tegra_chip_uid());
+        andusb_plat.serial_number = kstrdup(usb_serial_num, GFP_KERNEL);
         tegra_ehci2_device.dev.platform_data = &betelgeuse_ehci2_ulpi_platform_data;
         platform_add_devices(betelgeuse_usb_devices, ARRAY_SIZE(betelgeuse_usb_devices));
         betelgeuse_sub_usb_init();
