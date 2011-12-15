@@ -188,14 +188,16 @@ static struct tegra_utmip_config utmi_phy_config[] = {
 	},
 };
 
+/*
 static struct tegra_ulpi_config ulpi_phy_config = {
 	.reset_gpio = TEGRA_GPIO_PG2,
 	.clk = "clk_dev2",
 	.inf_type = TEGRA_USB_LINK_ULPI,
 };
+*/
 
 static struct tegra_ulpi_config betelgeuse_ehci2_ulpi_phy_config = {
-	.reset_gpio = TEGRA_GPIO_PV1,
+	.reset_gpio = TEGRA_GPIO_PV0,
 	.clk = "clk_dev2",
 };
 
@@ -228,7 +230,7 @@ static struct tegra_ehci_platform_data tegra_ehci_pdata[] = {
 			.power_down_on_bus_suspend = 1,
 	},
 	[1] = {
-			.phy_config = &ulpi_phy_config,
+			.phy_config = &betelgeuse_ehci2_ulpi_phy_config,
 			.operating_mode = TEGRA_USB_HOST,
 			.power_down_on_bus_suspend = 1,
 	},
