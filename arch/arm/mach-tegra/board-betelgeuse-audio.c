@@ -66,26 +66,6 @@ static struct i2c_board_info __initdata antares_i2c_bus1_board_info[] = {
 	},
 };
 
-#ifdef CONFIG_SND_SOC_FM34
-static int fm34_pwr = TEGRA_GPIO_PU2;
-
-static const struct i2c_board_info antares_i2c_bus1_fm34_info[] = {
-	{
-		I2C_BOARD_INFO("fm34_i2c", 0x60),
-		.platform_data = &fm34_pwr,
-	},
-};
-
-static int __init antares_fm34_init(void)
-{
-	tegra_gpio_enable(fm34_pwr);
-
-	i2c_register_board_info(0, antares_i2c_bus1_fm34_info, 1);
-
-	return 0;
-}
-#endif
-
 static struct tegra_audio_platform_data tegra_audio_pdata[] = {
 	/* For I2S1 */
 	[0] = {
@@ -121,8 +101,20 @@ static struct tegra_audio_platform_data tegra_audio_pdata[] = {
 static struct tegra_das_platform_data tegra_das_pdata = {
 	.dap_clk = "clk_dev1",
 	.tegra_dap_port_info_table = {
+		// Reserved
+                [0] = {
+                        .dac_port = tegra_das_port_none,
+                        .dap_port = tegra_das_port_none,
+                        .codec_type = tegra_audio_codec_type_none,
+                        .device_property = {
+                                .num_channels = 0,
+                                .bits_per_sample = 0,
+                                .rate = 0,
+                                .dac_dap_data_comm_format = 0,
+                        },
+                },
 		/* I2S1 <--> DAC1 <--> DAP1 <--> Hifi Codec */
-		[0] = {
+		[1] = {
 			.dac_port = tegra_das_port_i2s1,
 			.dap_port = tegra_das_port_dap1,
 			.codec_type = tegra_audio_codec_type_hifi,
@@ -132,17 +124,6 @@ static struct tegra_das_platform_data tegra_das_pdata = {
 				.rate = 44100,
 				.dac_dap_data_comm_format =
 						dac_dap_data_format_all,
-			},
-		},
-		[1] = {
-			.dac_port = tegra_das_port_none,
-			.dap_port = tegra_das_port_none,
-			.codec_type = tegra_audio_codec_type_none,
-			.device_property = {
-				.num_channels = 0,
-				.bits_per_sample = 0,
-				.rate = 0,
-				.dac_dap_data_comm_format = 0,
 			},
 		},
 		[2] = {
@@ -156,8 +137,19 @@ static struct tegra_das_platform_data tegra_das_pdata = {
 				.dac_dap_data_comm_format = 0,
 			},
 		},
-		/* I2S2 <--> DAC2 <--> DAP4 <--> BT SCO Codec */
 		[3] = {
+			.dac_port = tegra_das_port_none,
+			.dap_port = tegra_das_port_none,
+			.codec_type = tegra_audio_codec_type_none,
+			.device_property = {
+				.num_channels = 0,
+				.bits_per_sample = 0,
+				.rate = 0,
+				.dac_dap_data_comm_format = 0,
+			},
+		},
+		/* I2S2 <--> DAC2 <--> DAP4 <--> BT SCO Codec */
+		[4] = {
 			.dac_port = tegra_das_port_i2s2,
 			.dap_port = tegra_das_port_dap4,
 			.codec_type = tegra_audio_codec_type_bluetooth,
@@ -167,17 +159,6 @@ static struct tegra_das_platform_data tegra_das_pdata = {
 				.rate = 8000,
 				.dac_dap_data_comm_format =
 					dac_dap_data_format_dsp,
-			},
-		},
-		[4] = {
-			.dac_port = tegra_das_port_none,
-			.dap_port = tegra_das_port_none,
-			.codec_type = tegra_audio_codec_type_none,
-			.device_property = {
-				.num_channels = 0,
-				.bits_per_sample = 0,
-				.rate = 0,
-				.dac_dap_data_comm_format = 0,
 			},
 		},
 	},
@@ -220,9 +201,6 @@ int __init betelgeuse_audio_init(void)
 	tegra_spdif_device.dev.platform_data = &tegra_spdif_pdata;
 	tegra_das_device.dev.platform_data = &tegra_das_pdata;
 	platform_add_devices(antares_audio_devices, ARRAY_SIZE(antares_audio_devices));
-#ifdef CONFIG_SND_SOC_FM34
-	antares_fm34_init();
-#endif
 	i2c_register_board_info(0, antares_i2c_bus1_board_info, 1);
 	return 0;
 }
