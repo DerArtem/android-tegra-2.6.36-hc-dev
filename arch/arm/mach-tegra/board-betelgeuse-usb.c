@@ -44,7 +44,7 @@
 #define USB_PRODUCT_ID_MTP_ADB		0x7100
 #define USB_PRODUCT_ID_MTP		0x7102
 #define USB_PRODUCT_ID_RNDIS		0x7103
-#define USB_VENDOR_ID			0x0930
+#define USB_VENDOR_ID			0x0955
 
 #ifdef CONFIG_USB_ANDROID_MASS_STORAGE
 static struct usb_mass_storage_platform_data tegra_usb_fsg_platform = {
