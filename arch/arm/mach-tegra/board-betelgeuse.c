@@ -365,6 +365,7 @@ static struct platform_device *betelgeuse_devices[] __initdata = {
         &tegra_gart_device,
         &tegra_avp_device,
 	&tegra_aes_device,
+	&tegra_wdt_device,
 };
 
 static void __init tegra_betelgeuse_init(void)
