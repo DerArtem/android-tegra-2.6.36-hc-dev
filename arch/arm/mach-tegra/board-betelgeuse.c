@@ -385,7 +385,7 @@ static void __init tegra_betelgeuse_init(void)
 	platform_add_devices(betelgeuse_devices, ARRAY_SIZE(betelgeuse_devices));
 
 	betelgeuse_audio_init();
-	betelgeuse_wired_jack_init();
+	//betelgeuse_wired_jack_init();
 	betelgeuse_panel_init();
 	//betelgeuse_kbc_init();
 	betelgeuse_sdhci_init();
