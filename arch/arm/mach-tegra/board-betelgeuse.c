@@ -203,25 +203,6 @@ static void __init tegra_betelgeuse_fixup(struct machine_desc *desc,
 	mi->bank[0].size  = SHUTTLE_MEM_SIZE - SHUTTLE_GPU_MEM_SIZE;
 }
 
-static __initdata struct tegra_clk_init_table betelgeuse_clk_init_table[] = {
-	/* name		parent		rate		enabled */
-	{ "uartd", "pll_p", 216000000, true},
-	{ "uartc", "pll_m", 600000000, false},
-	{ "blink", "clk_32k", 32768, false},
-	{ "pll_p_out4", "pll_p", 24000000, true },
-	/*{ "pwm", "clk_32k", 32768, false},*/
-	{ "pwm", "clk_m", 12000000, false},
-	{ "pll_a", NULL, 56448000, false},
-	{ "pll_a_out0", NULL, 11289600, false},
-	{ "i2s1", "pll_a_out0", 11289600, false},
-	{ "i2s2", "pll_a_out0", 11289600, false},
-	{ "audio", "pll_a_out0", 11289600, false},
-	{ "audio_2x", "audio", 22579200, false},
-	{ "spdif_out", "pll_a_out0", 5644800, false},
-	{ "kbc", "clk_32k", 32768, true},
-	{ NULL, NULL, 0, 0},
-};
-
 /*
 static struct tegra_suspend_platform_data betelgeuse_suspend = {
 	.cpu_timer = 5000,
@@ -375,8 +356,7 @@ static void __init tegra_betelgeuse_init(void)
 
 	tegra_init_suspend(&betelgeuse_suspend);
 
-	tegra_clk_init_from_table(betelgeuse_clk_init_table);
-
+	betelgeuse_clocks_init();
 	betelgeuse_pinmux_init();
 
 	betelgeuse_i2c_init();
