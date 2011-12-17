@@ -373,6 +373,7 @@ static void __init tegra_betelgeuse_init(void)
 	antares_keys_init();
 	betelgeuse_touch_init_egalax();
 	betelgeuse_power_init();
+	betelgeuse_wifi_init();
 }
 
 MACHINE_START(TEGRA_LEGACY, "tegra_legacy")
