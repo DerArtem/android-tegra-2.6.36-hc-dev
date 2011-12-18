@@ -306,7 +306,8 @@ static struct tegra_dc_platform_data betelgeuse_disp1_pdata = {
 };
 
 static struct tegra_dc_platform_data betelgeuse_disp2_pdata = {
-        .flags          = TEGRA_DC_FLAG_ENABLED,
+//      .flags          = TEGRA_DC_FLAG_ENABLED,
+        .flags          = 0,
         .default_out    = &betelgeuse_disp2_out,
         .fb             = &betelgeuse_hdmi_fb_data,
 };
