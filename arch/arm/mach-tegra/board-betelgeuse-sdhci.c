@@ -28,6 +28,11 @@
 
 #include "gpio-names.h"
 
+/* Make sure they are NOT trying to compile with a nonworking config */
+#ifdef CONFIG_MMC_EMBEDDED_SDIO
+#error  DISABLE MMC EMBEDDED SDIO, or WLAN wont work amd SD Cards could stop responding...
+#endif
+
 static struct resource sdhci_resource1[] = {
 	[0] = {
 		.start  = INT_SDMMC1,
