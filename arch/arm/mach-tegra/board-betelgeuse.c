@@ -117,31 +117,6 @@ static struct platform_device pda_power_device = {
 	},
 };
 
-static struct tegra_i2c_platform_data betelgeuse_i2c1_platform_data = {
-	.adapter_nr	= 0,
-	.bus_count	= 1,
-	.bus_clk_rate	= { 100000, 0 },
-};
-
-static struct tegra_i2c_platform_data betelgeuse_i2c2_platform_data = {
-	.adapter_nr     = 1,
-	.bus_count      = 1,
-	.bus_clk_rate   = { 100000, 0 },
-};
-
-static struct tegra_i2c_platform_data betelgeuse_i2c3_platform_data = {
-	.adapter_nr	= 2,
-	.bus_count	= 1,
-	.bus_clk_rate	= { 100000, 0 },
-};
-
-static struct tegra_i2c_platform_data betelgeuse_dvc_platform_data = {
-	.adapter_nr	= 3,
-	.bus_count	= 1,
-	.bus_clk_rate	= { 100000, 0 },
-	.is_dvc		= true,
-};
-
 //Is correct
 static struct i2c_board_info __initdata ak8975_device = {
 	I2C_BOARD_INFO("ak8975", 0x0c),
@@ -161,23 +136,6 @@ static int __init betelgeuse_touch_init_egalax(void)
 	tegra_gpio_enable(TEGRA_GPIO_PU4);
 	i2c_register_board_info(0, betelgeuse_i2c_bus1_touch_info, 1);
 	return 0;
-}
-
-static void betelgeuse_i2c_init(void)
-{
-	i2c_register_board_info(4, &ak8975_device, 1);
-
-	tegra_i2c_device1.dev.platform_data = &betelgeuse_i2c1_platform_data;
-	tegra_i2c_device2.dev.platform_data = &betelgeuse_i2c2_platform_data;
-	tegra_i2c_device3.dev.platform_data = &betelgeuse_i2c3_platform_data;
-	tegra_i2c_device4.dev.platform_data = &betelgeuse_dvc_platform_data;
-
-	platform_device_register(&tegra_i2c_device1);
-	platform_device_register(&tegra_i2c_device2);
-	platform_device_register(&tegra_i2c_device3);
-	platform_device_register(&tegra_i2c_device4);
-
-	//tegra_gpio_enable(TEGRA_GPIO_PD2);
 }
 
 static void __init tegra_betelgeuse_fixup(struct machine_desc *desc,
@@ -343,8 +301,8 @@ static void __init tegra_betelgeuse_init(void)
 
 	betelgeuse_clocks_init();
 	betelgeuse_pinmux_init();
-
 	betelgeuse_i2c_init();
+	i2c_register_board_info(4, &ak8975_device, 1);
 	//betelgeuse_keyboard_register_devices();
 
 	platform_add_devices(betelgeuse_devices, ARRAY_SIZE(betelgeuse_devices));
