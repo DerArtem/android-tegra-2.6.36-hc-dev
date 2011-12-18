@@ -121,15 +121,54 @@ static int betelgeuse_panel_disable(void)
 	return 0;
 }
 
+static struct regulator *betelgeuse_hdmi_reg = NULL;
+static struct regulator *betelgeuse_hdmi_pll = NULL;
+static int betelgeuse_hdmi_enabled = false;
+
 static int betelgeuse_hdmi_enable(void)
 {
-        pr_warning(">>> hdmi enable\n");
+        pr_info(">>> hdmi enable\n");
+        if (betelgeuse_hdmi_enabled)
+                return 0;
+
+        //gpio_set_value(BETELGEUSE_HDMI_ENB, 1);
+
+        betelgeuse_hdmi_reg = regulator_get(NULL, "avdd_hdmi");
+        if (IS_ERR_OR_NULL(betelgeuse_hdmi_reg)) {
+                //gpio_set_value(BETELGEUSE_HDMI_ENB, 0);
+                return PTR_ERR(betelgeuse_hdmi_reg);
+        }
+
+        betelgeuse_hdmi_pll = regulator_get(NULL, "avdd_hdmi_pll");
+        if (IS_ERR_OR_NULL(betelgeuse_hdmi_pll)) {
+                regulator_put(betelgeuse_hdmi_reg);
+                betelgeuse_hdmi_reg = NULL;
+                //gpio_set_value(BETELGEUSE_HDMI_ENB, 0);
+                return PTR_ERR(betelgeuse_hdmi_pll);
+        }
+
+        regulator_enable(betelgeuse_hdmi_reg);
+        regulator_enable(betelgeuse_hdmi_pll);
+        betelgeuse_hdmi_enabled = true;
         return 0;
 }
 
 static int betelgeuse_hdmi_disable(void)
 {
-        pr_warning(">>> hdmi disable\n");
+        pr_info(">>> hdmi disable\n");
+        if (!betelgeuse_hdmi_enabled)
+                return 0;
+
+        //gpio_set_value(BETELGEUSE_HDMI_ENB, 0);
+
+        regulator_disable(betelgeuse_hdmi_reg);
+        regulator_disable(betelgeuse_hdmi_pll);
+        regulator_put(betelgeuse_hdmi_reg);
+        betelgeuse_hdmi_reg = NULL;
+        regulator_put(betelgeuse_hdmi_pll);
+        betelgeuse_hdmi_pll = NULL;
+        betelgeuse_hdmi_enabled = false;
+
         return 0;
 }
 

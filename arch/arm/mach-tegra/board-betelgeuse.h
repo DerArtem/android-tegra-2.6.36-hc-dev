@@ -64,4 +64,6 @@ int __init betelgeuse_wifi_init(void);
 #define SHUTTLE_FB_NONROTATE TEGRA_GPIO_PH1 /*1 = screen rotation locked */
 #define SW_ROTATION_LOCK        (SW_MAX-1)
 
+#define BETELGEUSE_HDMI_ENB                TEGRA_GPIO_PV5 /* unconfirmed */
+
 #endif
