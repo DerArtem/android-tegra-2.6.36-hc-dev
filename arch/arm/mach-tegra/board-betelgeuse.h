@@ -31,6 +31,7 @@ int __init betelgeuse_usb_init(void);
 int __init betelgeuse_audio_init(void);
 int __init betelgeuse_wired_jack_init(void);
 int __init betelgeuse_wifi_init(void);
+int __init betelgeuse_camera_init(void);
 
 /* TPS6586X gpios */
 #define TPS6586X_GPIO_BASE      TEGRA_NR_GPIOS
@@ -65,6 +66,6 @@ int __init betelgeuse_wifi_init(void);
 #define SHUTTLE_FB_NONROTATE TEGRA_GPIO_PH1 /*1 = screen rotation locked */
 #define SW_ROTATION_LOCK        (SW_MAX-1)
 
-#define BETELGEUSE_HDMI_ENB                TEGRA_GPIO_PV5 /* unconfirmed */
+#define BETELGEUSE_CAMERA_POWER	TEGRA_GPIO_PV4
 
 #endif
