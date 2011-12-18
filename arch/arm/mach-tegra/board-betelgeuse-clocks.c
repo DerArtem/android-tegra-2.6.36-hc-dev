@@ -112,8 +112,9 @@ static __initdata struct tegra_clk_init_table betelgeuse_clk_init_table[] = {
 	{ "pwm",		"clk_m",		93385,		true},		/* tegra-pwm.0 tegra-pwm.1 tegra-pwm.2 tegra-pwm.3*/
 	{ "kfuse",		"clk_m",		12000000,		false},		/* kfuse-tegra */ /* always on - no init req */
 	{ "timer",		"clk_m",		12000000,		true},		/* timer */ /* always on - no init req */
-	{ "clk_d",		"clk_m",		24000000,		false},
-	{ "pll_e",		"clk_m",		1200000000,		false},
+	{ "clk_d",		"clk_m",		24000000,		true},
+	// Use default for now
+	//{ "pll_e",		"clk_m",		1200000000,		false},
 	{ "pll_x",		"clk_m",		1000000000,		true}, // check here
 	{ "cclk",		"pll_x",		1000000000,		true},
 	{ "cpu",		"cclk",			1000000000,		true},
@@ -179,8 +180,8 @@ static __initdata struct tegra_clk_init_table betelgeuse_clk_init_table[] = {
 #       define CDEV2 "clk_dev2"
 #endif
 
-	{ CDEV1,		NULL /*"pll_a_out0"*/,	11289600,	false},		/* used as audio CODEC MCLK */	
-	{ CDEV2,		NULL /*"pll_p_out4"*/,	24000000,	false}, 	/* probably used as USB clock - perhaps 24mhz ?*/	
+	{ CDEV1,		"pll_a_out0",		11289600,	false},		/* used as audio CODEC MCLK */	
+	{ CDEV2,		"pll_p_out4",		24000000,	false}, 	/* probably used as USB clock - perhaps 24mhz ?*/	
 	{ NULL,			NULL,			0,		0},
 };
 
