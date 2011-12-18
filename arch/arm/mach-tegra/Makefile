@@ -95,3 +95,4 @@ obj-${CONFIG_MACH_BETELGEUSE}           += board-betelgeuse-jack.o
 obj-${CONFIG_MACH_BETELGEUSE}           += board-betelgeuse-wifi.o
 obj-${CONFIG_MACH_BETELGEUSE}           += board-betelgeuse-i2c.o
 obj-${CONFIG_MACH_BETELGEUSE}		+= board-betelgeuse-camera.o
+obj-${CONFIG_MACH_BETELGEUSE}		+= board-betelgeuse-nvec.o

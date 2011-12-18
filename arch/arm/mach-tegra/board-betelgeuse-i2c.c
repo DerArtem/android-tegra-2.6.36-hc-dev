@@ -61,11 +61,13 @@ static struct tegra_i2c_platform_data betelgeuse_i2c2_platform_data = {
 	.bus_mux_len	= { 1, 1 },
 };
 
+/*
 static struct tegra_i2c_platform_data betelgeuse_i2c3_platform_data = {
 	.adapter_nr	= 3,
 	.bus_count	= 1,
 	.bus_clk_rate	= { 100000, 0 },
 };
+*/
 
 static struct tegra_i2c_platform_data betelgeuse_dvc_platform_data = {
 	.adapter_nr	= 4,
@@ -78,12 +80,12 @@ int __init betelgeuse_i2c_init(void)
 {
 	tegra_i2c_device1.dev.platform_data = &betelgeuse_i2c1_platform_data;
 	tegra_i2c_device2.dev.platform_data = &betelgeuse_i2c2_platform_data;
-	tegra_i2c_device3.dev.platform_data = &betelgeuse_i2c3_platform_data;
+	//tegra_i2c_device3.dev.platform_data = &betelgeuse_i2c3_platform_data;
 	tegra_i2c_device4.dev.platform_data = &betelgeuse_dvc_platform_data;
 
 	platform_device_register(&tegra_i2c_device1);
 	platform_device_register(&tegra_i2c_device2);
-	platform_device_register(&tegra_i2c_device3);
+	//platform_device_register(&tegra_i2c_device3);
 	platform_device_register(&tegra_i2c_device4);
 	
 	return 0;
