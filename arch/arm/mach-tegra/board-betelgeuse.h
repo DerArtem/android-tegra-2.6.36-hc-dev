@@ -33,6 +33,7 @@ int __init betelgeuse_wired_jack_init(void);
 int __init betelgeuse_wifi_init(void);
 int __init betelgeuse_camera_init(void);
 int __init betelgeuse_nvec_init(void);
+int __init antares_ec_init(void);
 
 /* TPS6586X gpios */
 #define TPS6586X_GPIO_BASE      TEGRA_NR_GPIOS

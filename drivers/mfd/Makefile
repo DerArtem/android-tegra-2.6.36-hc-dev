@@ -16,6 +16,7 @@ obj-$(CONFIG_MFD_DAVINCI_VOICECODEC)	+= davinci_voicecodec.o
 obj-$(CONFIG_MFD_DM355EVM_MSP)	+= dm355evm_msp.o
 
 obj-$(CONFIG_MFD_NVEC)          += nvec.o
+obj-$(CONFIG_MFD_NVTEC)		+= nvtec.o
 
 obj-$(CONFIG_MFD_STMPE)		+= stmpe.o
 obj-$(CONFIG_MFD_TC35892)	+= tc35892.o

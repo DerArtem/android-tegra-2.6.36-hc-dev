@@ -29,6 +29,12 @@ config NVEC_POWER
 	  Say Y here to enable Nvidia embedded controller power driver for
 	  Tegra2 based boards
 
+config BATTERY_NVTEC
+        boolean "Battery connected to Nuvoton embedded controller"
+        help
+          Say Y to include battery support for batteries connected to an
+          Nuvoton embedded controller
+
 config APM_POWER
 	tristate "APM emulation for class batteries"
 	depends on APM_EMULATION

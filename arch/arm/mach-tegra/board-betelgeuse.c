@@ -317,6 +317,7 @@ static void __init tegra_betelgeuse_init(void)
 	betelgeuse_touch_init_egalax();
 	betelgeuse_power_init();
 	//betelgeuse_nvec_init();
+	antares_ec_init();
 	betelgeuse_wifi_init();
 	betelgeuse_camera_init();
 }
