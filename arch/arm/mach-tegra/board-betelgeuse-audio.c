@@ -37,6 +37,7 @@
 #include <mach/audio.h>
 #include <mach/tegra_das.h>
 #include "devices.h"
+#include "gpio-names.h"
 #include "board-betelgeuse.h"
 
 static struct tegra_audio_platform_data tegra_spdif_pdata = {
@@ -47,11 +48,13 @@ static struct tegra_audio_platform_data tegra_spdif_pdata = {
 static struct wm8903_platform_data wm8903_pdata = {
 	.irq_active_low = 0,
 	.micdet_cfg = 0x00,           /* enable mic bias current */
-	.micdet_delay = 0,
+	.micdet_delay = 100,
 	.gpio_base = WM8903_GPIO_BASE,
 	.gpio_cfg = {
-		(0x06<<WM8903_GP1_FN_SHIFT) | WM8903_GP1_LVL | WM8903_GP1_DB,
-		(0x06<<WM8903_GP1_FN_SHIFT) | WM8903_GP1_DIR | WM8903_GP1_IP_CFG,
+		WM8903_GPIO_NO_CONFIG,
+		WM8903_GPIO_NO_CONFIG,
+		//(0x06<<WM8903_GP1_FN_SHIFT) | WM8903_GP1_LVL | WM8903_GP1_DB,
+		//(0x06<<WM8903_GP1_FN_SHIFT) | WM8903_GP1_DIR | WM8903_GP1_IP_CFG,
 		0,                     /* as output pin */
 		WM8903_GPIO_NO_CONFIG,
 		WM8903_GPIO_NO_CONFIG,
@@ -62,7 +65,7 @@ static struct i2c_board_info __initdata antares_i2c_bus1_board_info[] = {
 	{
 		I2C_BOARD_INFO("wm8903", 0x1a),
 		.platform_data = &wm8903_pdata,
-		//.irq = TEGRA_GPIO_TO_IRQ(TEGRA_GPIO_PW2),
+		//.irq = TEGRA_GPIO_TO_IRQ(TEGRA_GPIO_PX3),
 	},
 };
 
