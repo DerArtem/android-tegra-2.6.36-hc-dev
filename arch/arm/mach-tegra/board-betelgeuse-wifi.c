@@ -31,8 +31,8 @@
 #include "gpio-names.h"
 #include "board.h"
 
-#define ANTARES_WLAN_PWR	TEGRA_GPIO_PA5
-#define ANTARES_WLAN_RST	TEGRA_GPIO_PA6
+#define ANTARES_WLAN_PWR	TEGRA_GPIO_PK5
+#define ANTARES_WLAN_RST	TEGRA_GPIO_PK6
 
 static void (*wifi_status_cb)(int card_present, void *dev_id);
 static void *wifi_status_cb_devid;
