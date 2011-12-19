@@ -24,7 +24,6 @@
 #include <linux/mtd/mtd.h>
 #include <linux/mtd/partitions.h>
 #include <linux/dma-mapping.h>
-#include <linux/pda_power.h>
 #include <linux/i2c.h>
 #include <linux/i2c-tegra.h>
 #include <linux/gpio.h>
@@ -102,18 +101,6 @@ static struct platform_device debug_uart = {
 	.id = PLAT8250_DEV_PLATFORM,
 	.dev = {
 		.platform_data = debug_uart_platform_data,
-	},
-};
-
-/* PDA power */
-static struct pda_power_pdata pda_power_pdata = {
-};
-
-static struct platform_device pda_power_device = {
-	.name   = "pda_power",
-	.id     = -1,
-	.dev    = {
-		.platform_data  = &pda_power_pdata,
 	},
 };
 
@@ -271,9 +258,7 @@ static struct platform_device betelgeuse_gpio_keys_device = {
 
 static struct platform_device *betelgeuse_devices[] __initdata = {
         &debug_uart,
-        &pmu_device,
         &tegra_udc_device,
-        &pda_power_device,
         //&betelgeuse_gpio_keys_device,
 	&antares_keys_device,
         &tegra_spi_device1,
@@ -293,26 +278,28 @@ static void __init tegra_betelgeuse_init(void)
 
 	tegra_init_suspend(&betelgeuse_suspend);
 
-	betelgeuse_clocks_init();
 	betelgeuse_pinmux_init();
+	betelgeuse_clocks_init();
 	betelgeuse_i2c_init();
+	betelgeuse_power_init();
+	betelgeuse_usb_init();
+	//UART
+	//SPI
+	betelgeuse_sdhci_init();
+	betelgeuse_panel_init();
+	betelgeuse_audio_init();
+	betelgeuse_wired_jack_init();
 	betelgeuse_sensors_init();
 	//betelgeuse_keyboard_register_devices();
 
 	platform_add_devices(betelgeuse_devices, ARRAY_SIZE(betelgeuse_devices));
 
-	betelgeuse_audio_init();
-	//betelgeuse_wired_jack_init();
-	betelgeuse_panel_init();
 	//betelgeuse_kbc_init();
-	betelgeuse_sdhci_init();
-	betelgeuse_usb_init();
 	antares_keys_init();
 	betelgeuse_touch_init_egalax();
-	betelgeuse_power_init();
-	//betelgeuse_nvec_init();
-	antares_ec_init();
-	betelgeuse_wifi_init();
+	betelgeuse_nvec_init();
+	//antares_ec_init();
+	//betelgeuse_wifi_init();
 	betelgeuse_camera_init();
 }
 
