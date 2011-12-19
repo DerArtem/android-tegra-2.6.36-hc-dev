@@ -26,6 +26,7 @@ int betelgeuse_sdhci_init(void);
 void betelgeuse_emc_init(void);
 int betelgeuse_kbc_init(void);
 int __init betelgeuse_i2c_init(void);
+int __init betelgeuse_sensors_init(void);
 extern int betelgeuse_keyboard_register_devices(void);
 int __init betelgeuse_usb_init(void);
 int __init betelgeuse_audio_init(void);

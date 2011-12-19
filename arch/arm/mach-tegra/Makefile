@@ -97,3 +97,4 @@ obj-${CONFIG_MACH_BETELGEUSE}           += board-betelgeuse-i2c.o
 obj-${CONFIG_MACH_BETELGEUSE}		+= board-betelgeuse-camera.o
 obj-${CONFIG_MACH_BETELGEUSE}		+= board-betelgeuse-nvec.o
 obj-${CONFIG_MACH_BETELGEUSE}		+= board-betelgeuse-ec.o
+obj-${CONFIG_MACH_BETELGEUSE}		+= board-betelgeuse-sensors.o

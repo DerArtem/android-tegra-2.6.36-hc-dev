@@ -117,12 +117,6 @@ static struct platform_device pda_power_device = {
 	},
 };
 
-//Is correct
-static struct i2c_board_info __initdata ak8975_device = {
-	I2C_BOARD_INFO("ak8975", 0x0c),
-	.irq            = TEGRA_GPIO_TO_IRQ(TEGRA_GPIO_PV1),
-};
-
 //touch screen
 static const struct i2c_board_info betelgeuse_i2c_bus1_touch_info[] = {
 	{
@@ -302,7 +296,7 @@ static void __init tegra_betelgeuse_init(void)
 	betelgeuse_clocks_init();
 	betelgeuse_pinmux_init();
 	betelgeuse_i2c_init();
-	i2c_register_board_info(4, &ak8975_device, 1);
+	betelgeuse_sensors_init();
 	//betelgeuse_keyboard_register_devices();
 
 	platform_add_devices(betelgeuse_devices, ARRAY_SIZE(betelgeuse_devices));
