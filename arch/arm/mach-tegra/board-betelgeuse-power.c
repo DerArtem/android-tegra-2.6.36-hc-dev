@@ -18,6 +18,7 @@
  * 02111-1307, USA
  */
 #include <linux/i2c.h>
+#include <linux/version.h>
 #include <linux/regulator/machine.h>
 #include <linux/mfd/tps6586x.h>
 #include <linux/gpio.h>
@@ -28,6 +29,7 @@
 
 #include <mach/iomap.h>
 #include "board-betelgeuse.h"
+#include "devices.h"
 //#include "gpio-names.h"
 
 #define    PMC_CTRL                0x0
@@ -230,6 +232,14 @@ int __init betelgeuse_regulator_init(void)
         return 0;
 }
 
+static struct platform_device *betelgeuse_power_devices[] __initdata = {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,38)        
+        &tegra_pmu_device,
+#else  
+        &pmu_device,
+#endif 
+};
+
 int __init betelgeuse_power_init(void)
 {
 	int err;
@@ -240,5 +250,5 @@ int __init betelgeuse_power_init(void)
 		return -1;
 	}
 
-	return 0;
+	return platform_add_devices(betelgeuse_power_devices, ARRAY_SIZE(betelgeuse_power_devices));
 }
