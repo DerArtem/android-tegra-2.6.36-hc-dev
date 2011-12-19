@@ -74,7 +74,8 @@ static struct nvec_subdev_info nvec_subdevs[] = {
 /* The NVidia Embedded controller */
 static struct nvec_platform_data nvec_mfd_platform_data = {
         .i2c_addr       = 0x8a,
-        .gpio           = TEGRA_GPIO_PD0,
+        //.gpio           = TEGRA_GPIO_PD0,
+        .gpio           = TEGRA_GPIO_PBB1,
         .irq            = INT_I2C3,
         .base           = TEGRA_I2C3_BASE,
         .size           = TEGRA_I2C3_SIZE,
@@ -98,7 +99,7 @@ static struct platform_device *shuttle_power_devices[] __initdata = {
 int __init betelgeuse_nvec_init(void)
 {
 	tegra_gpio_enable(TEGRA_GPIO_PW3);
-	tegra_gpio_enable(TEGRA_GPIO_PD0);
+	tegra_gpio_enable(TEGRA_GPIO_PBB1);
 	tegra_gpio_enable(TEGRA_GPIO_PAA7);
 	return platform_add_devices(shuttle_power_devices, ARRAY_SIZE(shuttle_power_devices));
 }
