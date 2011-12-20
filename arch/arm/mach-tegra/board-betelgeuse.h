@@ -20,7 +20,7 @@
 
 void betelgeuse_pinmux_init(void);
 void __init betelgeuse_clocks_init(void);
-int betelgeuse_power_init(void);
+int __init betelgeuse_power_init(void);
 int betelgeuse_panel_init(void);
 int betelgeuse_sdhci_init(void);
 void betelgeuse_emc_init(void);
