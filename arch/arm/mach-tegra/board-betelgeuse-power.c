@@ -1,7 +1,5 @@
 /*
  * Copyright (C) 2010 NVIDIA, Inc.
- *               2010 Marc Dietrich <marvin24@gmx.de>
- *               2011 Artem Makhutov <artem@makhutov.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -18,22 +16,39 @@
  * 02111-1307, USA
  */
 #include <linux/i2c.h>
-#include <linux/version.h>
+#include <linux/pda_power.h>
+#include <linux/platform_device.h>
+#include <linux/resource.h>
 #include <linux/regulator/machine.h>
 #include <linux/mfd/tps6586x.h>
 #include <linux/gpio.h>
-//#include <linux/power/gpio-charger.h>
-#include <linux/platform_device.h>
-#include <linux/err.h>
+#include <mach/suspend.h>
 #include <linux/io.h>
 
 #include <mach/iomap.h>
-#include "board-betelgeuse.h"
-#include "devices.h"
-//#include "gpio-names.h"
+#include <mach/irqs.h>
 
-#define    PMC_CTRL                0x0
-#define    PMC_CTRL_INTR_LOW       (1<<7)
+#include <generated/mach-types.h>
+
+#include "gpio-names.h"
+#include "fuse.h"
+#include "power.h"
+#include "wakeups-t2.h"
+#include "board.h"
+#include "board-betelgeuse.h"
+
+#define PMC_CTRL		0x0
+#define PMC_CTRL_INTR_LOW	(1 << 17)
+
+#define CHARGING_DISABLE	TEGRA_GPIO_PR6
+
+int __init betelgeuse_charge_init(void)
+{
+	gpio_request(CHARGING_DISABLE, "chg_disable");
+	gpio_direction_output(CHARGING_DISABLE, 0);
+	tegra_gpio_enable(CHARGING_DISABLE);
+	return 0;
+}
 
 static struct regulator_consumer_supply tps658621_sm0_supply[] = {
 	REGULATOR_SUPPLY("vdd_core", NULL),
@@ -44,90 +59,63 @@ static struct regulator_consumer_supply tps658621_sm1_supply[] = {
 static struct regulator_consumer_supply tps658621_sm2_supply[] = {
 	REGULATOR_SUPPLY("vdd_sm2", NULL),
 };
-static struct regulator_consumer_supply tps658621_ldo0_supply[] = { /* VDDIO_PEX_CLK */
+static struct regulator_consumer_supply tps658621_ldo0_supply[] = {
 	REGULATOR_SUPPLY("vdd_ldo0", NULL),
-	REGULATOR_SUPPLY("pex_clk", NULL),
+	REGULATOR_SUPPLY("p_cam_avdd", NULL),
 };
-static struct regulator_consumer_supply tps658621_ldo1_supply[] = { /* 1V2 */
+static struct regulator_consumer_supply tps658621_ldo1_supply[] = {
 	REGULATOR_SUPPLY("vdd_ldo1", NULL),
-	REGULATOR_SUPPLY("pll_a", NULL),
-	REGULATOR_SUPPLY("pll_m", NULL),
-	REGULATOR_SUPPLY("pll_p", NULL),
-	REGULATOR_SUPPLY("pll_c", NULL),
-	REGULATOR_SUPPLY("pll_u", NULL),
-	REGULATOR_SUPPLY("pll_u1", NULL),
-	REGULATOR_SUPPLY("pll_s", NULL),
-	REGULATOR_SUPPLY("pll_x", NULL),
+	REGULATOR_SUPPLY("avdd_pll", NULL),
 };
-static struct regulator_consumer_supply tps658621_ldo2_supply[] = { /* VDD_RTC */
+static struct regulator_consumer_supply tps658621_ldo2_supply[] = {
 	REGULATOR_SUPPLY("vdd_ldo2", NULL),
 	REGULATOR_SUPPLY("vdd_rtc", NULL),
+	REGULATOR_SUPPLY("vdd_aon", NULL),
 };
-
-// Check below
-static struct regulator_consumer_supply tps658621_ldo3_supply[] = { /* 3V3 */
+static struct regulator_consumer_supply tps658621_ldo3_supply[] = {
 	REGULATOR_SUPPLY("vdd_ldo3", NULL),
 	REGULATOR_SUPPLY("avdd_usb", NULL),
 	REGULATOR_SUPPLY("avdd_usb_pll", NULL),
-	REGULATOR_SUPPLY("vddio_nand_3v3", NULL), /* AON? */
-	REGULATOR_SUPPLY("sdio", NULL),
-	REGULATOR_SUPPLY("vmmc", NULL), /////////
-	REGULATOR_SUPPLY("vddio_vi", NULL),
-	REGULATOR_SUPPLY("avdd_lvds", NULL),
-	REGULATOR_SUPPLY("tmon0", NULL),
-	REGULATOR_SUPPLY("vddio_wlan", NULL), //////
 };
-
-static struct regulator_consumer_supply tps658621_ldo4_supply[] = { 
+static struct regulator_consumer_supply tps658621_ldo4_supply[] = {
 	REGULATOR_SUPPLY("vdd_ldo4", NULL),
-	REGULATOR_SUPPLY("avdd_osc", NULL),       /* AVDD_OSC */
-	REGULATOR_SUPPLY("vddio_sys", NULL),
-	REGULATOR_SUPPLY("vddio_lcd", NULL),      /* AON? */
-	REGULATOR_SUPPLY("vddio_audio", NULL),    /* AON? */
-	REGULATOR_SUPPLY("vddio_ddr", NULL),      /* AON? */
-	REGULATOR_SUPPLY("vddio_uart", NULL),     /* AON? */
-	REGULATOR_SUPPLY("vddio_bb", NULL),       /* AON? */
-	REGULATOR_SUPPLY("tmon1.8vs", NULL),
-	REGULATOR_SUPPLY("vddhostif_bt", NULL),
-	REGULATOR_SUPPLY("wifi3vs", NULL),
-	REGULATOR_SUPPLY("vdd_aon", NULL),
-	//REGULATOR_SUPPLY("vddio_sys", "panjit_touch"),
+	REGULATOR_SUPPLY("avdd_osc", NULL),
+	REGULATOR_SUPPLY("vddio_sys", "panjit_touch"),
 };
-
+static struct regulator_consumer_supply tps658621_ldo5_supply[] = {
+	REGULATOR_SUPPLY("vdd_ldo5", NULL),
+	REGULATOR_SUPPLY("vmmc", "sdhci-tegra.3"),
+};
 static struct regulator_consumer_supply tps658621_ldo6_supply[] = {
 	REGULATOR_SUPPLY("vdd_ldo6", NULL),
-	REGULATOR_SUPPLY("vddio vdac", NULL),
-	REGULATOR_SUPPLY("avdd_vdac", NULL),
-	REGULATOR_SUPPLY("vmic", NULL),
-	//REGULATOR_SUPPLY("vmic", "soc-audio"),
+	REGULATOR_SUPPLY("vcsi", "tegra_camera"),
+	REGULATOR_SUPPLY("vmic", "soc-audio"),
 };
 static struct regulator_consumer_supply tps658621_ldo7_supply[] = {
 	REGULATOR_SUPPLY("vdd_ldo7", NULL),
 	REGULATOR_SUPPLY("avdd_hdmi", NULL),
+	REGULATOR_SUPPLY("vdd_fuse", NULL),
 };
-static struct regulator_consumer_supply tps658621_ldo8_supply[] = { /* AVDD_HDMI_PLL */
+static struct regulator_consumer_supply tps658621_ldo8_supply[] = {
 	REGULATOR_SUPPLY("vdd_ldo8", NULL),
-	REGULATOR_SUPPLY("avdd_hdmi_pll", NULL),  /* PLLHD */
+	REGULATOR_SUPPLY("avdd_hdmi_pll", NULL),
 };
 static struct regulator_consumer_supply tps658621_ldo9_supply[] = {
-	REGULATOR_SUPPLY("vdd_ldo9", NULL),
+	//REGULATOR_SUPPLY("vdd_ldo9", NULL),
+	//REGULATOR_SUPPLY("avdd_2v85", NULL),
 	REGULATOR_SUPPLY("vdd_ddr_rx", NULL),
 	//REGULATOR_SUPPLY("avdd_amp", NULL),
 };
 
 /*
- * Skip these for new as they require some more work
- *
-static struct regulator_consumer_supply tps658621_buck_supply[] = {
-	REGULATOR_SUPPLY("pll_e", NULL),
+ * Current TPS6586x is known for having a voltage glitch if current load changes
+ * from low to high in auto PWM/PFM mode for CPU's Vdd line.
+ */
+static struct tps6586x_settings sm1_config = {
+	.sm_pwm_mode = PWM_ONLY,
 };
-static struct regulator_consumer_supply tps658621_soc_supply[] = {
-	REGULATOR_SUPPLY("soc", NULL),
-	REGULATOR_SUPPLY("pex_clk", NULL),
-};
-*/
 
-#define REGULATOR_INIT(_id, _minmv, _maxmv)				\
+#define REGULATOR_INIT(_id, _minmv, _maxmv, on, config)			\
 	{								\
 		.constraints = {					\
 			.min_uV = (_minmv)*1000,			\
@@ -137,26 +125,39 @@ static struct regulator_consumer_supply tps658621_soc_supply[] = {
 			.valid_ops_mask = (REGULATOR_CHANGE_MODE |	\
 					   REGULATOR_CHANGE_STATUS |	\
 					   REGULATOR_CHANGE_VOLTAGE),	\
+			.always_on = on,				\
 		},							\
 		.num_consumer_supplies = ARRAY_SIZE(tps658621_##_id##_supply),\
 		.consumer_supplies = tps658621_##_id##_supply,		\
+		.driver_data = config,					\
 	}
 
-static struct regulator_init_data sm0_data = REGULATOR_INIT(sm0, 625, 2700);    // 1200
-static struct regulator_init_data sm1_data = REGULATOR_INIT(sm1, 625, 1100);    // 1000
-static struct regulator_init_data sm2_data = REGULATOR_INIT(sm2, 3000, 4550);   // 3700
-static struct regulator_init_data ldo0_data = REGULATOR_INIT(ldo0, 1250, 3300); // 3300
-static struct regulator_init_data ldo1_data = REGULATOR_INIT(ldo1, 725, 1500);  // 1100
-static struct regulator_init_data ldo2_data = REGULATOR_INIT(ldo2, 725, 1500);  // 1200
-static struct regulator_init_data ldo3_data = REGULATOR_INIT(ldo3, 1250, 3300); // 3300
-static struct regulator_init_data ldo4_data = REGULATOR_INIT(ldo4, 1700, 2000); // 1800
-static struct regulator_init_data ldo6_data = REGULATOR_INIT(ldo6, 1250, 3300); // 2850
-static struct regulator_init_data ldo7_data = REGULATOR_INIT(ldo7, 1250, 3300); // 3300
-static struct regulator_init_data ldo8_data = REGULATOR_INIT(ldo8, 1250, 3300); // 1800
-static struct regulator_init_data ldo9_data = REGULATOR_INIT(ldo9, 1250, 3300); // 2850
+#define ON	1
+#define OFF	0
 
-//static struct regulator_init_data soc_data = REGULATOR_INIT(soc, 1250, 3300);
-//static struct regulator_init_data buck_data = REGULATOR_INIT(buck, 1250, 3300); 
+static struct regulator_init_data sm0_data = REGULATOR_INIT(sm0, 625, 2700, ON, NULL); //1200
+static struct regulator_init_data sm1_data = REGULATOR_INIT(sm1, 625, 2700, ON, &sm1_config); // 1000
+static struct regulator_init_data sm2_data = REGULATOR_INIT(sm2, 3000, 4550, ON, NULL); //3700 *ok*
+static struct regulator_init_data ldo0_data = REGULATOR_INIT(ldo0, 1250, 3350, OFF, NULL); //3300
+static struct regulator_init_data ldo1_data = REGULATOR_INIT(ldo1, 725, 1500, ON, NULL); //1100
+static struct regulator_init_data ldo2_data = REGULATOR_INIT(ldo2, 725, 1500, OFF, NULL); //1200
+static struct regulator_init_data ldo3_data = REGULATOR_INIT(ldo3, 1250, 3350, OFF, NULL); //3300
+static struct regulator_init_data ldo4_data = REGULATOR_INIT(ldo4, 1700, 2000, ON, NULL); //1800
+static struct regulator_init_data ldo5_data = REGULATOR_INIT(ldo5, 1250, 3350, ON, NULL); //2850
+static struct regulator_init_data ldo6_data = REGULATOR_INIT(ldo6, 1250, 3350, OFF, NULL); //2850
+static struct regulator_init_data ldo7_data = REGULATOR_INIT(ldo7, 1250, 3350, OFF, NULL); //3300
+static struct regulator_init_data ldo8_data = REGULATOR_INIT(ldo8, 1250, 3350, OFF, NULL); //1800
+static struct regulator_init_data ldo9_data = REGULATOR_INIT(ldo9, 1250, 3350, ON, NULL); //2850
+
+static struct tps6586x_rtc_platform_data rtc_data = {
+	.irq = TEGRA_NR_IRQS + TPS6586X_INT_RTC_ALM1,
+	.start = {
+		.year = 2009,
+		.month = 1,
+		.day = 1,
+	},
+	.cl_sel = TPS6586X_RTC_CL_SEL_1_5PF /* use lowest (external 20pF cap) */
+};
 
 #define TPS_REG(_id, _data)			\
 	{					\
@@ -164,20 +165,6 @@ static struct regulator_init_data ldo9_data = REGULATOR_INIT(ldo9, 1250, 3300); 
 		.name = "tps6586x-regulator",	\
 		.platform_data = _data,		\
 	}
-
-/* FIXME: do we have rtc alarm irq? */
-static struct tps6586x_rtc_platform_data rtc_data = {
-	.irq	= TEGRA_NR_IRQS + TPS6586X_INT_RTC_ALM1,
-	.start	= {
-			.year	= 2009,
-			.month	= 1,
-			.day	= 1,
-			.hour	= 0,
-			.min	= 0,
-			.sec	= 0,
-		},
-	.cl_sel = TPS6586X_RTC_CL_SEL_1_5PF /* use lowest (external 20pF cap) */
-};
 
 static struct tps6586x_subdev_info tps_devs[] = {
 	TPS_REG(SM_0, &sm0_data),
@@ -188,16 +175,15 @@ static struct tps6586x_subdev_info tps_devs[] = {
 	TPS_REG(LDO_2, &ldo2_data),
 	TPS_REG(LDO_3, &ldo3_data),
 	TPS_REG(LDO_4, &ldo4_data),
+	TPS_REG(LDO_5, &ldo5_data),
 	TPS_REG(LDO_6, &ldo6_data),
 	TPS_REG(LDO_7, &ldo7_data),
 	TPS_REG(LDO_8, &ldo8_data),
 	TPS_REG(LDO_9, &ldo9_data),
-//	TPS_REG(SOC, &soc_data),
-//	TPS_REG(BUCK, &buck_data),
 	{
-		.id		= 0,
-		.name		= "tps6586x-rtc",
-		.platform_data	= &rtc_data,
+		.id	= 0,
+		.name	= "tps6586x-rtc",
+		.platform_data = &rtc_data,
 	},
 };
 
@@ -211,44 +197,52 @@ static struct tps6586x_platform_data tps_platform = {
 static struct i2c_board_info __initdata betelgeuse_regulators[] = {
 	{
 		I2C_BOARD_INFO("tps6586x", 0x34),
-		.irq = INT_EXTERNAL_PMU,
-		.platform_data = &tps_platform,
+		.irq		= INT_EXTERNAL_PMU,
+		.platform_data	= &tps_platform,
 	},
 };
 
-int __init betelgeuse_regulator_init(void)
-{
-        void __iomem *pmc = IO_ADDRESS(TEGRA_PMC_BASE);
-        u32 pmc_ctrl;
-
-        /* configure the power management controller to trigger PMU
-        * interrupts when low */
-        pmc_ctrl = readl(pmc + PMC_CTRL);
-        writel(pmc_ctrl | PMC_CTRL_INTR_LOW, pmc + PMC_CTRL);
-
-//      regulator_has_full_constraints();
-
-        i2c_register_board_info(4, betelgeuse_regulators, 1);
-        return 0;
-}
-
-static struct platform_device *betelgeuse_power_devices[] __initdata = {
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,38)        
-        &tegra_pmu_device,
-#else  
-        &pmu_device,
-#endif 
+static struct tegra_suspend_platform_data betelgeuse_suspend_data = {
+	/*
+	 * Check power on time and crystal oscillator start time
+	 * for appropriate settings.
+	 */
+	.cpu_timer	= 2000,
+	.cpu_off_timer	= 100,
+	.suspend_mode	= TEGRA_SUSPEND_LP0,
+	.core_timer	= 0x7e7e,
+	.core_off_timer = 0xf,
+	.separate_req	= true,
+	.corereq_high	= false,
+	.sysclkreq_high	= true,
+	.wake_enb	= TEGRA_WAKE_GPIO_PV2 | TEGRA_WAKE_GPIO_PY6,
+	.wake_high	= 0,
+	.wake_low	= TEGRA_WAKE_GPIO_PV2 | TEGRA_WAKE_GPIO_PY6,
+	.wake_any	= 0,
 };
 
 int __init betelgeuse_power_init(void)
 {
-	int err;
+	void __iomem *pmc = IO_ADDRESS(TEGRA_PMC_BASE);
+	void __iomem *chip_id = IO_ADDRESS(TEGRA_APB_MISC_BASE) + 0x804;
+	u32 pmc_ctrl;
+	u32 minor;
 
-	err = betelgeuse_regulator_init();
-	if (err < 0) {
-		pr_warning("Unable to initialize regulator\n");
-		return -1;
-	}
+	minor = (readl(chip_id) >> 16) & 0xf;
+	/* A03 (but not A03p) chips do not support LP0 */
+	if (minor == 3 && !(tegra_spare_fuse(18) || tegra_spare_fuse(19)))
+		betelgeuse_suspend_data.suspend_mode = TEGRA_SUSPEND_LP1;
 
-	return platform_add_devices(betelgeuse_power_devices, ARRAY_SIZE(betelgeuse_power_devices));
+	/* configure the power management controller to trigger PMU
+	 * interrupts when low */
+	pmc_ctrl = readl(pmc + PMC_CTRL);
+	writel(pmc_ctrl | PMC_CTRL_INTR_LOW, pmc + PMC_CTRL);
+
+	i2c_register_board_info(4, betelgeuse_regulators, 1);
+
+	regulator_has_full_constraints();
+
+	tegra_init_suspend(&betelgeuse_suspend_data);
+
+	return 0;
 }

@@ -276,7 +276,7 @@ static void __init tegra_betelgeuse_init(void)
 	tegra_common_init();
 //	betelgeuse_emc_init();
 
-	tegra_init_suspend(&betelgeuse_suspend);
+//	tegra_init_suspend(&betelgeuse_suspend);
 
 	betelgeuse_pinmux_init();
 	betelgeuse_clocks_init();
@@ -297,7 +297,7 @@ static void __init tegra_betelgeuse_init(void)
 	//betelgeuse_kbc_init();
 	antares_keys_init();
 	betelgeuse_touch_init_egalax();
-	//betelgeuse_nvec_init();
+	betelgeuse_nvec_init();
 	//antares_ec_init();
 	//betelgeuse_wifi_init();
 	betelgeuse_camera_init();
