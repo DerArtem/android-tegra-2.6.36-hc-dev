@@ -27,6 +27,7 @@
 #include <mach/pinmux.h>
 
 #include "gpio-names.h"
+#include "board-betelgeuse.h"
 
 /* Make sure they are NOT trying to compile with a nonworking config */
 #ifdef CONFIG_MMC_EMBEDDED_SDIO
@@ -75,7 +76,8 @@ static struct resource sdhci_resource4[] = {
 //Wifi
 static struct tegra_sdhci_platform_data tegra_sdhci_platform_data1 = {
 	.clk_id = NULL,
-	.force_hs = 1,
+	.register_status_notify = betelgeuse_wifi_status_register,
+	.force_hs = 0,
 	.cd_gpio = -1,
 	.wp_gpio = -1,
 	.power_gpio = -1,

@@ -1,7 +1,8 @@
 /*
- * arch/arm/mach-tegra/board-harmony-sdhci.c
+ * arch/arm/mach-tegra/board-betelgeuse-wifi.c
  *
  * Copyright (C) 2010 Google, Inc.
+ * Copyright (C) 2011 Artem Makhutov
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -30,34 +31,24 @@
 
 #include "gpio-names.h"
 #include "board.h"
-
-#define ANTARES_WLAN_PWR	TEGRA_GPIO_PK5
-#define ANTARES_WLAN_RST	TEGRA_GPIO_PK6
+#include "board-betelgeuse.h"
 
 static void (*wifi_status_cb)(int card_present, void *dev_id);
 static void *wifi_status_cb_devid;
-static int antares_wifi_status_register(void (*callback)(int , void *), void *);
-static struct clk *wifi_32k_clk;
 
-static int antares_wifi_reset(int on);
-static int antares_wifi_power(int on);
-static int antares_wifi_set_carddetect(int val);
+static int betelgeuse_wifi_reset(int on);
+static int betelgeuse_wifi_power(int on);
+static int betelgeuse_wifi_set_carddetect(int val);
 
-static struct wifi_platform_data antares_wifi_control = {
-	.set_power      = antares_wifi_power,
-	.set_reset      = antares_wifi_reset,
-	.set_carddetect = antares_wifi_set_carddetect,
-};
-
-static struct platform_device antares_wifi_device = {
+/* This is used for the ath6kl driver - not used for ar6000.ko */
+static struct platform_device betelgeuse_wifi_device = {
 	.name           = "ath6kl",
 	.id             = 1,
 	.dev            = {
-		//.platform_data = &antares_wifi_control,
 	},
 };
 
-static int antares_wifi_status_register(
+int betelgeuse_wifi_status_register(
 		void (*callback)(int card_present, void *dev_id),
 		void *dev_id)
 {
@@ -68,7 +59,7 @@ static int antares_wifi_status_register(
 	return 0;
 }
 
-static int antares_wifi_set_carddetect(int val)
+static int betelgeuse_wifi_set_carddetect(int val)
 {
 	pr_info("%s: %d\n", __func__, val);
 	if (wifi_status_cb)
@@ -78,24 +69,28 @@ static int antares_wifi_set_carddetect(int val)
 	return 0;
 }
 
-static int antares_wifi_power(int on)
+static int betelgeuse_wifi_power(int on)
 {
 	pr_info("%s: %d\n", __func__, on);
 
-	gpio_set_value(ANTARES_WLAN_PWR, on);
+	gpio_set_value(BETELGEUSE_WLAN_PWR, on);
 	mdelay(100);
-	gpio_set_value(ANTARES_WLAN_RST, on);
+	gpio_set_value(BETELGEUSE_WLAN_RST, on);
 	mdelay(200);
-
-	if (on)
-		clk_enable(wifi_32k_clk);
-	else
-		clk_disable(wifi_32k_clk);
 
 	return 0;
 }
 
-static int antares_wifi_reset(int on)
+/* This function is called from ar6000.ko */
+/* For some reason this does not work so we will just enable power */
+static int wlan_setup_power(int on, int detect)
+{
+	pr_info("%s: WIFI Power: on: %i, detect:%i\n", __func__, on, detect);
+	return 0;
+}
+EXPORT_SYMBOL_GPL(wlan_setup_power);
+
+static int betelgeuse_wifi_reset(int on)
 {
 	pr_info("%s: do nothing\n", __func__);
 	return 0;
@@ -103,21 +98,25 @@ static int antares_wifi_reset(int on)
 
 int __init betelgeuse_wifi_init(void)
 {
-	pr_info("%s: WIFI1\n", __func__);
-	gpio_request(ANTARES_WLAN_PWR, "wlan_power");
-	gpio_request(ANTARES_WLAN_RST, "wlan_rst");
+	pr_info("%s: WIFI init start\n", __func__);
+	gpio_request(BETELGEUSE_WLAN_PWR, "wlan_power");
+	gpio_request(BETELGEUSE_WLAN_RST, "wlan_rst");
 
-	tegra_gpio_enable(ANTARES_WLAN_PWR);
-	tegra_gpio_enable(ANTARES_WLAN_RST);
+	tegra_gpio_enable(BETELGEUSE_WLAN_PWR);
+	tegra_gpio_enable(BETELGEUSE_WLAN_RST);
 
-	gpio_direction_output(ANTARES_WLAN_PWR, 0);
-	gpio_direction_output(ANTARES_WLAN_RST, 0);
+	gpio_direction_output(BETELGEUSE_WLAN_PWR, 0);
+	gpio_direction_output(BETELGEUSE_WLAN_RST, 0);
 
-	platform_device_register(&antares_wifi_device);
+	platform_device_register(&betelgeuse_wifi_device);
 
-	device_init_wakeup(&antares_wifi_device.dev, 1);
-	device_set_wakeup_enable(&antares_wifi_device.dev, 0);
-	pr_info("%s: WIFI2\n", __func__);
+	betelgeuse_wifi_power(1);
+	betelgeuse_wifi_reset(1);
+	betelgeuse_wifi_set_carddetect(1);
+
+	device_init_wakeup(&betelgeuse_wifi_device.dev, 1);
+	device_set_wakeup_enable(&betelgeuse_wifi_device.dev, 0);
+	pr_info("%s: WIFI init finished\n", __func__);
 
 	return 0;
 }
