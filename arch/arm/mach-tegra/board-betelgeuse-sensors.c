@@ -48,15 +48,12 @@
 #include "gpio-names.h"
 #include "devices.h"
 
-#define AKM8975_IRQ_GPIO        TEGRA_GPIO_PV1
-#define AC_PRESENT_GPIO         TEGRA_GPIO_PV3
-
 static struct i2c_board_info __initdata ak8975_device = {
 	I2C_BOARD_INFO("akm8975", 0x0c),
 	.irq            = TEGRA_GPIO_TO_IRQ(AKM8975_IRQ_GPIO),
 };
 
-static void antares_akm8975_init(void)
+static void betelgeuse_akm8975_init(void)
 {
 	tegra_gpio_enable(AKM8975_IRQ_GPIO);
 	gpio_request(AKM8975_IRQ_GPIO, "akm8975");
@@ -66,6 +63,6 @@ static void antares_akm8975_init(void)
 
 int __init betelgeuse_sensors_init(void)
 {
-	antares_akm8975_init();
+	betelgeuse_akm8975_init();
 	return 0;
 }

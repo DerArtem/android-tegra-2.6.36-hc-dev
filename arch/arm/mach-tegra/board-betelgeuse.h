@@ -74,5 +74,7 @@ int betelgeuse_wifi_status_register(void (*callback)(int , void *), void *);
 
 #define BETELGEUSE_WLAN_PWR	TEGRA_GPIO_PK5
 #define BETELGEUSE_WLAN_RST	TEGRA_GPIO_PK6
+#define AKM8975_IRQ_GPIO	TEGRA_GPIO_PV1
+#define AC_PRESENT_GPIO		TEGRA_GPIO_PV3
 
 #endif
