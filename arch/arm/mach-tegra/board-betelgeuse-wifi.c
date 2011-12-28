@@ -110,6 +110,7 @@ int __init betelgeuse_wifi_init(void)
 
 	platform_device_register(&betelgeuse_wifi_device);
 
+	// Lets just power on wifi
 	betelgeuse_wifi_power(1);
 	betelgeuse_wifi_reset(1);
 	betelgeuse_wifi_set_carddetect(1);
