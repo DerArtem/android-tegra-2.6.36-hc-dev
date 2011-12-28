@@ -61,40 +61,63 @@ static struct regulator_consumer_supply tps658621_sm2_supply[] = {
 };
 static struct regulator_consumer_supply tps658621_ldo0_supply[] = {
 	REGULATOR_SUPPLY("vdd_ldo0", NULL),
-	REGULATOR_SUPPLY("p_cam_avdd", NULL),
+	REGULATOR_SUPPLY("vdd_pex_clk_1", NULL)
+	//REGULATOR_SUPPLY("p_cam_avdd", NULL),
 };
 static struct regulator_consumer_supply tps658621_ldo1_supply[] = {
 	REGULATOR_SUPPLY("vdd_ldo1", NULL),
-	REGULATOR_SUPPLY("avdd_pll", NULL),
+        REGULATOR_SUPPLY("pll_a", NULL),
+        REGULATOR_SUPPLY("pll_m", NULL),
+        REGULATOR_SUPPLY("pll_p", NULL),
+        REGULATOR_SUPPLY("pll_c", NULL),
+        REGULATOR_SUPPLY("pll_u", NULL),
+        REGULATOR_SUPPLY("pll_u1", NULL),
+        REGULATOR_SUPPLY("pll_s", NULL),
+        REGULATOR_SUPPLY("pll_x", NULL)
+//	REGULATOR_SUPPLY("avdd_pll", NULL),
 };
 static struct regulator_consumer_supply tps658621_ldo2_supply[] = {
 	REGULATOR_SUPPLY("vdd_ldo2", NULL),
 	REGULATOR_SUPPLY("vdd_rtc", NULL),
-	REGULATOR_SUPPLY("vdd_aon", NULL),
 };
 static struct regulator_consumer_supply tps658621_ldo3_supply[] = {
 	REGULATOR_SUPPLY("vdd_ldo3", NULL),
-	REGULATOR_SUPPLY("avdd_usb", NULL),
-	REGULATOR_SUPPLY("avdd_usb_pll", NULL),
+        REGULATOR_SUPPLY("avdd_usb", NULL),
+        REGULATOR_SUPPLY("avdd_usb_pll", NULL),
+        REGULATOR_SUPPLY("vddio_nand_3v3", NULL), // AON
+        REGULATOR_SUPPLY("sdio", NULL), /* vddio_sdio */
+        REGULATOR_SUPPLY("vmmc", NULL), /* vddio_mmc, but sdhci.c requires it to be called vmmc*/
+        REGULATOR_SUPPLY("vddio_vi", NULL),
+        REGULATOR_SUPPLY("avdd_lvds", NULL),
+        REGULATOR_SUPPLY("tmon0", NULL),
 };
 static struct regulator_consumer_supply tps658621_ldo4_supply[] = {
 	REGULATOR_SUPPLY("vdd_ldo4", NULL),
-	REGULATOR_SUPPLY("avdd_osc", NULL),
-	REGULATOR_SUPPLY("vddio_sys", "panjit_touch"),
+        REGULATOR_SUPPLY("avdd_osc", NULL),
+        REGULATOR_SUPPLY("vddio_sys", NULL),
+        REGULATOR_SUPPLY("vddio_lcd", NULL),       //AON
+        REGULATOR_SUPPLY("vddio_audio", NULL),     //AON
+        REGULATOR_SUPPLY("vddio_ddr", NULL),       //AON
+        REGULATOR_SUPPLY("vddio_uart", NULL),      //AON
+        REGULATOR_SUPPLY("vddio_bb", NULL),        //AON
+        REGULATOR_SUPPLY("vddhostif_bt", NULL),
+        REGULATOR_SUPPLY("vddio_wlan", NULL)
 };
+
+//Unused
 static struct regulator_consumer_supply tps658621_ldo5_supply[] = {
 	REGULATOR_SUPPLY("vdd_ldo5", NULL),
-	REGULATOR_SUPPLY("vmmc", "sdhci-tegra.3"),
 };
 static struct regulator_consumer_supply tps658621_ldo6_supply[] = {
 	REGULATOR_SUPPLY("vdd_ldo6", NULL),
-	REGULATOR_SUPPLY("vcsi", "tegra_camera"),
-	REGULATOR_SUPPLY("vmic", "soc-audio"),
+	//REGULATOR_SUPPLY("vmic", "soc-audio"),
+	REGULATOR_SUPPLY("vddio vdac", NULL),
+        REGULATOR_SUPPLY("avdd_vdac", NULL)
 };
 static struct regulator_consumer_supply tps658621_ldo7_supply[] = {
 	REGULATOR_SUPPLY("vdd_ldo7", NULL),
 	REGULATOR_SUPPLY("avdd_hdmi", NULL),
-	REGULATOR_SUPPLY("vdd_fuse", NULL),
+	//REGULATOR_SUPPLY("vdd_fuse", NULL),
 };
 static struct regulator_consumer_supply tps658621_ldo8_supply[] = {
 	REGULATOR_SUPPLY("vdd_ldo8", NULL),
