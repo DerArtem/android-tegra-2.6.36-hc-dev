@@ -260,7 +260,9 @@ static struct platform_device *betelgeuse_devices[] __initdata = {
         &debug_uart,
         &tegra_udc_device,
         //&betelgeuse_gpio_keys_device,
+	#ifdef CONFIG_KEYBOARD_GPIO
 	&antares_keys_device,
+	#endif
         &tegra_spi_device1,
         &tegra_spi_device2,
         &tegra_spi_device3,
@@ -295,7 +297,9 @@ static void __init tegra_betelgeuse_init(void)
 	platform_add_devices(betelgeuse_devices, ARRAY_SIZE(betelgeuse_devices));
 
 	//betelgeuse_kbc_init();
+	#ifdef CONFIG_KEYBOARD_GPIO
 	antares_keys_init();
+	#endif
 	betelgeuse_touch_init_egalax();
 	//betelgeuse_nvec_init();
 	//antares_ec_init();
