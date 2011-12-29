@@ -16,17 +16,20 @@
  * 02111-1307, USA
  */
 #include <linux/i2c.h>
-#include <linux/pda_power.h>
+#include <linux/reboot.h>
 #include <linux/platform_device.h>
 #include <linux/resource.h>
 #include <linux/regulator/machine.h>
 #include <linux/mfd/tps6586x.h>
 #include <linux/gpio.h>
-#include <mach/suspend.h>
 #include <linux/io.h>
+#include <linux/err.h>
+#include <linux/mfd/nvec.h>
 
 #include <mach/iomap.h>
 #include <mach/irqs.h>
+#include <mach/system.h>
+#include <mach/suspend.h>
 
 #include <generated/mach-types.h>
 
@@ -39,16 +42,6 @@
 
 #define PMC_CTRL		0x0
 #define PMC_CTRL_INTR_LOW	(1 << 17)
-
-#define CHARGING_DISABLE	TEGRA_GPIO_PR6
-
-int __init betelgeuse_charge_init(void)
-{
-	gpio_request(CHARGING_DISABLE, "chg_disable");
-	gpio_direction_output(CHARGING_DISABLE, 0);
-	tegra_gpio_enable(CHARGING_DISABLE);
-	return 0;
-}
 
 static struct regulator_consumer_supply tps658621_sm0_supply[] = {
 	REGULATOR_SUPPLY("vdd_core", NULL),
@@ -226,6 +219,111 @@ static struct i2c_board_info __initdata betelgeuse_regulators[] = {
 	},
 };
 
+static void reg_off(const char *reg)
+{
+	int rc;
+	struct regulator *regulator;
+
+	regulator = regulator_get(NULL, reg);
+
+	if (IS_ERR(regulator)) {
+		pr_err("%s: regulator_get returned %ld\n", __func__,
+			PTR_ERR(regulator));
+		return;
+	}
+
+	/* force disabling of regulator to turn off system */
+	rc = regulator_force_disable(regulator);
+	if (rc)
+		pr_err("%s: regulator_disable returned %d\n", __func__, rc);
+	regulator_put(regulator);
+}
+
+static void reg_on(const char *reg)
+{
+	int rc;
+	struct regulator *regulator;
+
+	regulator = regulator_get(NULL, reg);
+
+	if (IS_ERR(regulator)) {
+	pr_err("%s: regulator_get returned %ld\n", __func__,
+		PTR_ERR(regulator));
+	return;
+	}
+
+	/* enable the regulator */
+	rc = regulator_enable(regulator);
+	if (rc)
+		pr_err("%s: regulator_enable returned %d\n", __func__, rc);
+	regulator_put(regulator);
+}
+
+static void betelgeuse_power_off(void)
+{
+	/* Power down through NvEC */
+	nvec_poweroff();
+
+	/* Then try by powering off supplies */
+	reg_off("vdd_sm2");
+	reg_off("vdd_core");
+	reg_off("vdd_cpu");
+	reg_off("vdd_soc");
+	local_irq_disable();
+	while (1) {
+		dsb();
+		__asm__ ("wfi");
+	}
+}
+
+static void tegra_sys_reset(char mode, const char *cmd)
+{
+	/* use *_related to avoid spinlock since caches are off */
+	u32 reg;
+	void __iomem *car_reset = IO_ADDRESS(TEGRA_CLK_RESET_BASE + 0x04);
+	void __iomem *sys_reset = IO_ADDRESS(TEGRA_PMC_BASE + 0x00);
+
+	/* CAR reset */
+	reg = readl_relaxed(car_reset);
+	reg |= 0x04;
+	writel_relaxed(reg, car_reset);
+
+	/* System reset */
+	reg = readl_relaxed(sys_reset);
+	reg |= 0x10;
+	writel_relaxed(reg, sys_reset);
+}
+
+static int tegra_reboot_notify(struct notifier_block *nb,
+                                unsigned long event, void *data)
+{
+	switch (event) {
+	case SYS_RESTART:
+	case SYS_HALT:
+	case SYS_POWER_OFF:
+		/* USB power rail must be enabled during boot or we won't reboot*/
+		reg_on("avdd_usb");
+
+		return NOTIFY_OK;
+	}
+	return NOTIFY_DONE;
+}
+
+static struct notifier_block tegra_reboot_nb = {
+	.notifier_call = tegra_reboot_notify,
+	.next = NULL,
+	.priority = 0
+};
+
+static void __init tegra_setup_reboot(void)
+{
+	int rc = register_reboot_notifier(&tegra_reboot_nb);
+	if (rc)
+		pr_err("%s: failed to register platform reboot notifier\n",__func__);
+	/*arm_pm_restart = shuttle_restart;             */
+	tegra_reset = tegra_sys_reset;
+}
+
 static struct tegra_suspend_platform_data betelgeuse_suspend_data = {
 	/*
 	 * Check power on time and crystal oscillator start time
@@ -259,7 +357,13 @@ int __init betelgeuse_power_init(void)
 	err = i2c_register_board_info(4, betelgeuse_regulators, 1);
 	if (err < 0)
 		pr_warning("Unable to initialize regulator\n");
-	
+
+	/* register the poweroff callback */
+	pm_power_off = betelgeuse_power_off;
+
+	/* And the restart callback */
+	tegra_setup_reboot();
+
 	regulator_has_full_constraints();
 
 	tegra_init_suspend(&betelgeuse_suspend_data);
