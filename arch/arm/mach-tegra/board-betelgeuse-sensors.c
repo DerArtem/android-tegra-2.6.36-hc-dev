@@ -58,11 +58,25 @@ static void betelgeuse_akm8975_init(void)
 	tegra_gpio_enable(AKM8975_IRQ_GPIO);
 	gpio_request(AKM8975_IRQ_GPIO, "akm8975");
 	gpio_direction_input(AKM8975_IRQ_GPIO);
-	i2c_register_board_info(4, &ak8975_device, 1);
+	i2c_register_board_info(0, &ak8975_device, 1);
+}
+
+static struct i2c_board_info __initdata atd7461_board_info = {
+	I2C_BOARD_INFO("atd7461", 0x4c), /* aka lm90 */
+	.irq		= TEGRA_GPIO_TO_IRQ(ATD7461_IRQ_GPIO),
+};
+
+static void betelgeuse_atd7461_init(void)
+{
+	tegra_gpio_enable(ATD7461_IRQ_GPIO);
+	gpio_request(ATD7461_IRQ_GPIO, "atd7461");
+	gpio_direction_input(ATD7461_IRQ_GPIO);
+	i2c_register_board_info(0, &atd7461_board_info, 1);
 }
 
 int __init betelgeuse_sensors_init(void)
 {
 	betelgeuse_akm8975_init();
+	betelgeuse_atd7461_init();
 	return 0;
 }
