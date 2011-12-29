@@ -90,6 +90,7 @@ static struct regulator_consumer_supply tps658621_ldo3_supply[] = {
         REGULATOR_SUPPLY("vddio_vi", NULL),
         REGULATOR_SUPPLY("avdd_lvds", NULL),
         REGULATOR_SUPPLY("tmon0", NULL),
+	REGULATOR_SUPPLY("vdd_vcore_temp", NULL),
 };
 static struct regulator_consumer_supply tps658621_ldo4_supply[] = {
 	REGULATOR_SUPPLY("vdd_ldo4", NULL),

@@ -290,7 +290,7 @@ static void __init tegra_betelgeuse_init(void)
 	betelgeuse_sdhci_init();
 	betelgeuse_panel_init();
 	betelgeuse_audio_init();
-	betelgeuse_wired_jack_init();
+	//betelgeuse_wired_jack_init();
 	betelgeuse_sensors_init();
 	//betelgeuse_keyboard_register_devices();
 
