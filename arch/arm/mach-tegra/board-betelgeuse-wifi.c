@@ -88,7 +88,7 @@ static int wlan_setup_power(int on, int detect)
 	pr_info("%s: WIFI Power: on: %i, detect:%i\n", __func__, on, detect);
 	return 0;
 }
-EXPORT_SYMBOL_GPL(wlan_setup_power);
+EXPORT_SYMBOL(wlan_setup_power);
 
 static int betelgeuse_wifi_reset(int on)
 {
