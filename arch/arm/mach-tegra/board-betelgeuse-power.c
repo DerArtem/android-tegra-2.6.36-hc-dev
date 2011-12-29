@@ -95,7 +95,8 @@ static struct regulator_consumer_supply tps658621_ldo4_supply[] = {
         REGULATOR_SUPPLY("vddio_uart", NULL),      //AON
         REGULATOR_SUPPLY("vddio_bb", NULL),        //AON
         REGULATOR_SUPPLY("vddhostif_bt", NULL),
-        REGULATOR_SUPPLY("vddio_wlan", NULL)
+        REGULATOR_SUPPLY("vddio_wlan", NULL),
+	REGULATOR_SUPPLY("vmic", NULL)
 };
 
 //Unused
