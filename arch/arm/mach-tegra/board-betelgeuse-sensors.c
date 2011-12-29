@@ -88,7 +88,7 @@ static void betelgeuse_adt7461_init(void)
 	tegra_gpio_enable(ADT7461_IRQ_GPIO);
 	gpio_request(ADT7461_IRQ_GPIO, "adt7461");
 	gpio_direction_input(ADT7461_IRQ_GPIO);
-	i2c_register_board_info(0, &adt7461_board_info, 1);
+	i2c_register_board_info(4, &adt7461_board_info, 1);
 }
 
 int __init betelgeuse_sensors_init(void)
