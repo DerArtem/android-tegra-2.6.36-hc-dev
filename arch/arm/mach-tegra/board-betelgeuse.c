@@ -284,6 +284,7 @@ static void __init tegra_betelgeuse_init(void)
 	betelgeuse_clocks_init();
 	betelgeuse_i2c_init();
 	betelgeuse_power_init();
+	betelgeuse_nvec_init();
 	betelgeuse_usb_init();
 	//UART
 	//SPI
@@ -301,7 +302,6 @@ static void __init tegra_betelgeuse_init(void)
 	antares_keys_init();
 	#endif
 	betelgeuse_touch_init_egalax();
-	//betelgeuse_nvec_init();
 	//antares_ec_init();
 	betelgeuse_wifi_init();
 	betelgeuse_camera_init();

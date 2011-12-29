@@ -204,6 +204,14 @@ config KEYBOARD_MATRIX
 	  To compile this driver as a module, choose M here: the
 	  module will be called matrix_keypad.
 
+config KEYBOARD_NVEC
+	tristate "Support for PS2 keyboard attached to the NVidia Embedded controller"
+	select MFD_CORE
+	depends on MFD_NVEC
+	help
+	  Support for a Ps2 keyboard attached to the NVidia embedded
+	  controller used on several Tegra2 based boards.
+
 config KEYBOARD_HIL_OLD
 	tristate "HP HIL keyboard support (simple driver)"
 	depends on GSC || HP300

@@ -50,7 +50,7 @@
 /* Power controller of Nvidia embedded controller platform data */
 static struct nvec_power_platform_data nvec_power_pdata = {
         .low_batt_irq = TEGRA_GPIO_TO_IRQ(TEGRA_GPIO_PW3),    /* If there is a low battery IRQ */
-        .in_s3_state_gpio = TEGRA_GPIO_PAA7,                  /* Gpio pin used to flag that system is suspended */
+        //.in_s3_state_gpio = TEGRA_GPIO_PAA7,                  /* Gpio pin used to flag that system is suspended */
         .low_batt_alarm_percent = 5,                          /* Percent of batt below which system is forcibly turned off */
 };
 
@@ -74,8 +74,7 @@ static struct nvec_subdev_info nvec_subdevs[] = {
 /* The NVidia Embedded controller */
 static struct nvec_platform_data nvec_mfd_platform_data = {
         .i2c_addr       = 0x8a,
-        //.gpio           = TEGRA_GPIO_PD0,
-        .gpio           = TEGRA_GPIO_PBB1,
+        .gpio           = BETELGEUSE_NVEC_REQ,
         .irq            = INT_I2C3,
         .base           = TEGRA_I2C3_BASE,
         .size           = TEGRA_I2C3_SIZE,
@@ -92,14 +91,15 @@ static struct platform_device shuttle_nvec_mfd = {
 };
 
 static struct platform_device *shuttle_power_devices[] __initdata = {
+	&pmu_device,
         &shuttle_nvec_mfd,
 };
 
 
 int __init betelgeuse_nvec_init(void)
 {
+	tegra_gpio_enable(BETELGEUSE_NVEC_REQ);
 	tegra_gpio_enable(TEGRA_GPIO_PW3);
-	tegra_gpio_enable(TEGRA_GPIO_PBB1);
-	tegra_gpio_enable(TEGRA_GPIO_PAA7);
+	//tegra_gpio_enable(TEGRA_GPIO_PAA7);
 	return platform_add_devices(shuttle_power_devices, ARRAY_SIZE(shuttle_power_devices));
 }
