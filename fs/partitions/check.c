@@ -39,7 +39,6 @@
 #include "karma.h"
 #include "sysv68.h"
 #include "cmdline.h"
-#include "tegrapart.h"
 
 #ifdef CONFIG_BLK_DEV_MD
 extern void md_autodetect_dev(dev_t dev);
@@ -50,9 +49,6 @@ int warn_no_part = 1; /*This is ugly: should make genhd removable media aware*/
 static int (*check_part[])(struct parsed_partitions *) = {
 #ifdef CONFIG_CMDLINE_PARTITION
 	cmdline_partition,
-#endif
-#ifdef CONFIG_TEGRAPART_PARTITION
-	tegrapart_partition,
 #endif
 	/*
 	 * Probe partition formats with tables at disk address 0
