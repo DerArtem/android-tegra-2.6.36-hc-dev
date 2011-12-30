@@ -163,7 +163,7 @@ static void __init tegra_betelgeuse_init(void)
 
 	platform_add_devices(betelgeuse_devices, ARRAY_SIZE(betelgeuse_devices));
 
-	//betelgeuse_kbc_init();
+	betelgeuse_kbc_init();
 	betelgeuse_touch_init_egalax();
 	//antares_ec_init();
 	betelgeuse_wifi_init();
