@@ -80,4 +80,18 @@ int betelgeuse_wifi_status_register(void (*callback)(int , void *), void *);
 #define BETELGEUSE_NVEC_REQ	TEGRA_GPIO_PBB1	
 #define BETELGEUSE_WAKE_FROM_KEY TEGRA_GPIO_PA0 // EC Keyboard Wakeup
 
+/* Active input GPIOs in 2.6.32 - not active in 2.6.36:
+* gpio-12  (nvrm_gpio           ) in  lo			TEGRA_GPIO_PB4
+* gpio-154 (nvrm_gpio           ) in  lo			TEGRA_GPIO_PT2
+* gpio-161 (nvrm_gpio           ) in  lo irq-353 (default)	TEGRA_GPIO_PU1
+* gpio-162 (nvrm_gpio           ) in  hi irq-354 (default)	TEGRA_GPIO_PU2
+* gpio-170 (nvrm_gpio           ) in  hi irq-362 (default)	TEGRA_GPIO_PV2
+* gpio-175 (nvrm_gpio           ) in  lo irq-367 (default)	TEGRA_GPIO_PV7
+* gpio-178 (nvrm_gpio           ) in  lo irq-370 (default)	TEGRA_GPIO_PW2
+* gpio-179 (nvrm_gpio           ) in  hi irq-371 (default)	TEGRA_GPIO_PW3
+* gpio-184 (nvrm_gpio           ) in  hi			TEGRA_GPIO_PX0
+* gpio-186 (nvrm_gpio           ) in  lo			TEGRA_GPIO_PX2
+* gpio-187 (nvrm_gpio           ) in  hi irq-379 (default)	TEGRA_GPIO_PX3
+*/
+
 #endif
