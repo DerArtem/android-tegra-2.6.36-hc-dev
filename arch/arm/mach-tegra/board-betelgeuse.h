@@ -92,6 +92,9 @@ int betelgeuse_wifi_status_register(void (*callback)(int , void *), void *);
 * gpio-184 (nvrm_gpio           ) in  hi			TEGRA_GPIO_PX0 s_PCB_ID_GPIO
 * gpio-186 (nvrm_gpio           ) in  lo			TEGRA_GPIO_PX2 s_PCB_ID_GPIO
 * gpio-187 (nvrm_gpio           ) in  hi irq-379 (default)	TEGRA_GPIO_PX3
+*
+* Active output GPIOs:
+* gpio-220 (nvrm_gpio           ) out hi			TEGRA_GPIO_PBB4 s_VSleep_En
 */
 
 #endif
