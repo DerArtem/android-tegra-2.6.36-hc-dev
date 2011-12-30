@@ -78,5 +78,6 @@ int betelgeuse_wifi_status_register(void (*callback)(int , void *), void *);
 #define ADT7461_IRQ_GPIO	TEGRA_GPIO_PN6
 #define AC_PRESENT_GPIO		TEGRA_GPIO_PV3
 #define BETELGEUSE_NVEC_REQ	TEGRA_GPIO_PBB1	
+#define BETELGEUSE_WAKE_FROM_KEY TEGRA_GPIO_PA0 // EC Keyboard Wakeup
 
 #endif
