@@ -325,25 +325,6 @@ static void __init tegra_setup_reboot(void)
 	tegra_reset = tegra_sys_reset;
 }
 
-static struct tegra_suspend_platform_data betelgeuse_suspend_data = {
-	/*
-	 * Check power on time and crystal oscillator start time
-	 * for appropriate settings.
-	 */
-	.cpu_timer	= 2000,
-	.cpu_off_timer	= 100,
-	.suspend_mode	= TEGRA_SUSPEND_LP1,
-	.core_timer	= 0x7e7e,
-	.core_off_timer = 0xf,
-	.separate_req	= true,
-	.corereq_high	= false,
-	.sysclkreq_high	= true,
-	.wake_enb	= TEGRA_WAKE_GPIO_PA0,
-	.wake_high	= 0,
-	.wake_low	= TEGRA_WAKE_GPIO_PA0,
-	.wake_any	= 0,
-};
-
 int __init betelgeuse_power_init(void)
 {
 	int err;
@@ -366,8 +347,6 @@ int __init betelgeuse_power_init(void)
 	tegra_setup_reboot();
 
 	regulator_has_full_constraints();
-
-	tegra_init_suspend(&betelgeuse_suspend_data);
 
 	return 0;
 }

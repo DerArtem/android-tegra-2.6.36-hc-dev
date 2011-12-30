@@ -146,6 +146,20 @@ static int __init parse_tag_nvidia(const struct tag *tag)
 }
 __tagtable(ATAG_NVIDIA, parse_tag_nvidia);
 
+static struct tegra_suspend_platform_data betelgeuse_suspend = {
+	.cpu_timer	= 5000,
+	.cpu_off_timer	= 5000,
+	.core_timer	= 0x7e7e,
+	.core_off_timer	= 0x7f,
+	.corereq_high	= false,
+	.sysclkreq_high	= true,
+	.suspend_mode   = TEGRA_SUSPEND_LP0,
+	.wake_enb	= TEGRA_WAKE_GPIO_PA0,
+	.wake_high	= 0,
+	.wake_low	= TEGRA_WAKE_GPIO_PA0,
+	.wake_any	= 0,
+};
+
 static struct plat_serial8250_port debug_uart_platform_data[] = {
 	{
 		.membase	= IO_ADDRESS(TEGRA_UARTD_BASE),
@@ -207,10 +221,8 @@ static struct platform_device *betelgeuse_devices[] __initdata = {
 static void __init tegra_betelgeuse_init(void)
 {
 	tegra_common_init();
+	tegra_init_suspend(&betelgeuse_suspend);
 //	betelgeuse_emc_init();
-
-//	tegra_init_suspend(&betelgeuse_suspend);
-
 	betelgeuse_pinmux_init();
 	betelgeuse_clocks_init();
 	betelgeuse_i2c_init();
@@ -224,13 +236,11 @@ static void __init tegra_betelgeuse_init(void)
 	betelgeuse_audio_init();
 	//betelgeuse_wired_jack_init();
 	betelgeuse_sensors_init();
-	//betelgeuse_keyboard_register_devices();
 
 	platform_add_devices(betelgeuse_devices, ARRAY_SIZE(betelgeuse_devices));
 
 	betelgeuse_kbc_init();
 	betelgeuse_touch_init_egalax();
-	//antares_ec_init();
 	betelgeuse_wifi_init();
 	betelgeuse_camera_init();
 }
