@@ -330,8 +330,8 @@ static int nvec_power_update_status(struct nvec_power *power,bool force_update)
 	struct device* master = power->master;
 	
 	/* Do not accept to update too often */
-	if (!force_update && (power->next_update - jiffies) > 0)
-		return 0;
+	//if (!force_update && (power->next_update - jiffies) > 0)
+	//	return 0;
 
 	/* get exclusive access to the accelerometer */
 	mutex_lock(&power->lock);	
