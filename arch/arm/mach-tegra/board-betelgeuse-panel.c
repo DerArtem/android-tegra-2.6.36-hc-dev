@@ -37,13 +37,6 @@
 #include "gpio-names.h"
 #include "board-betelgeuse.h"
 
-#define betelgeuse_bl_enb		TEGRA_GPIO_PB5
-#define betelgeuse_lvds_shutdown	TEGRA_GPIO_PB2
-#define betelgeuse_en_vdd_pnl		TEGRA_GPIO_PC6
-#define betelgeuse_bl_vdd		TEGRA_GPIO_PW0
-#define betelgeuse_bl_pwm		TEGRA_GPIO_PB4
-#define betelgeuse_hdmi_hpd        	TEGRA_GPIO_PN7
-
 /* Estimate memory layout for GPU */
 //#define TEGRA_ROUND_ALLOC(x) (((x) + 4095) & ((unsigned)(-4096)))
 //#define SHUTTLE_FB_SIZE TEGRA_ROUND_ALLOC(1024*600*(16/8)*SHUTTLE_FB_PAGES)
@@ -63,31 +56,31 @@ static int betelgeuse_backlight_init(struct device *dev)
 {
 	int ret;
 
-	ret = gpio_request(betelgeuse_bl_enb, "backlight_enb");
+	ret = gpio_request(BETALGEUSE_BL_ENB, "backlight_enb");
 	if (ret < 0)
 		return ret;
 
-	ret = gpio_direction_output(betelgeuse_bl_enb, 1);
+	ret = gpio_direction_output(BETALGEUSE_BL_ENB, 1);
 	if (ret < 0)
-		gpio_free(betelgeuse_bl_enb);
+		gpio_free(BETALGEUSE_BL_ENB);
 	else
-		tegra_gpio_enable(betelgeuse_bl_enb);
+		tegra_gpio_enable(BETALGEUSE_BL_ENB);
 
 	return ret;
 };
 
 static void betelgeuse_backlight_exit(struct device *dev)
 {
-	gpio_set_value(betelgeuse_bl_enb, 0);
-	gpio_free(betelgeuse_bl_enb);
-	tegra_gpio_disable(betelgeuse_bl_enb);
+	gpio_set_value(BETALGEUSE_BL_ENB, 0);
+	gpio_free(BETALGEUSE_BL_ENB);
+	tegra_gpio_disable(BETALGEUSE_BL_ENB);
 }
 
 static int betelgeuse_backlight_notify(struct device *unused, int brightness)
 {
-	gpio_set_value(betelgeuse_en_vdd_pnl, !!brightness);
-	gpio_set_value(betelgeuse_lvds_shutdown, !!brightness);
-	gpio_set_value(betelgeuse_bl_enb, !!brightness);
+	gpio_set_value(BETALGEUSE_EN_VDD_PANEL, !!brightness);
+	gpio_set_value(BETALGEUSE_LVDS_SHUTDOWN, !!brightness);
+	gpio_set_value(BETALGEUSE_BL_ENB, !!brightness);
 	return brightness;
 }
 
@@ -111,13 +104,13 @@ static struct platform_device betelgeuse_backlight_device = {
 
 static int betelgeuse_panel_enable(void)
 {
-	gpio_set_value(betelgeuse_lvds_shutdown, 1);
+	gpio_set_value(BETALGEUSE_LVDS_SHUTDOWN, 1);
 	return 0;
 }
 
 static int betelgeuse_panel_disable(void)
 {
-	gpio_set_value(betelgeuse_lvds_shutdown, 0);
+	gpio_set_value(BETALGEUSE_LVDS_SHUTDOWN, 0);
 	return 0;
 }
 
@@ -289,7 +282,7 @@ static struct tegra_dc_out betelgeuse_disp2_out = {
         .flags          = TEGRA_DC_OUT_HOTPLUG_HIGH,
 
         .dcc_bus        = 1,
-        .hotplug_gpio   = betelgeuse_hdmi_hpd,
+        .hotplug_gpio   = BETALGEUSE_HDMI_HPD,
 
         .align          = TEGRA_DC_ALIGN_MSB,
         .order          = TEGRA_DC_ORDER_RED_BLUE,
@@ -374,21 +367,21 @@ int __init betelgeuse_panel_init(void)
 {
 	int err;
 
-	gpio_request(betelgeuse_en_vdd_pnl, "en_vdd_pnl");
-	gpio_direction_output(betelgeuse_en_vdd_pnl, 1);
-	tegra_gpio_enable(betelgeuse_en_vdd_pnl);
+	gpio_request(BETALGEUSE_EN_VDD_PANEL, "en_vdd_pnl");
+	gpio_direction_output(BETALGEUSE_EN_VDD_PANEL, 1);
+	tegra_gpio_enable(BETALGEUSE_EN_VDD_PANEL);
 
-	gpio_request(betelgeuse_bl_vdd, "bl_vdd");
-	gpio_direction_output(betelgeuse_bl_vdd, 1);
-	tegra_gpio_enable(betelgeuse_bl_vdd);
+	gpio_request(BETALGEUSE_BL_VDD, "bl_vdd");
+	gpio_direction_output(BETALGEUSE_BL_VDD, 1);
+	tegra_gpio_enable(BETALGEUSE_BL_VDD);
 
-	gpio_request(betelgeuse_lvds_shutdown, "lvds_shdn");
-	gpio_direction_output(betelgeuse_lvds_shutdown, 1);
-	tegra_gpio_enable(betelgeuse_lvds_shutdown);
+	gpio_request(BETALGEUSE_LVDS_SHUTDOWN, "lvds_shdn");
+	gpio_direction_output(BETALGEUSE_LVDS_SHUTDOWN, 1);
+	tegra_gpio_enable(BETALGEUSE_LVDS_SHUTDOWN);
 
-	gpio_request(betelgeuse_hdmi_hpd, "hdmi_hpd");
-	gpio_direction_input(betelgeuse_hdmi_hpd);
-	tegra_gpio_enable(betelgeuse_hdmi_hpd);
+	gpio_request(BETALGEUSE_HDMI_HPD, "hdmi_hpd");
+	gpio_direction_input(BETALGEUSE_HDMI_HPD);
+	tegra_gpio_enable(BETALGEUSE_HDMI_HPD);
 
 	err = platform_add_devices(betelgeuse_gfx_devices,
 				   ARRAY_SIZE(betelgeuse_gfx_devices));
