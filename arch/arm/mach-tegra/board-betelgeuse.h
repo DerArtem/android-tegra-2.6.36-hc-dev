@@ -70,6 +70,7 @@ int betelgeuse_wifi_status_register(void (*callback)(int , void *), void *);
 #define AC_PRESENT_GPIO		TEGRA_GPIO_PV3
 #define BETELGEUSE_NVEC_REQ	TEGRA_GPIO_PBB1	
 #define BETELGEUSE_WAKE_FROM_KEY TEGRA_GPIO_PA0 // EC Keyboard Wakeup
+#define BETELGEUSE_LOW_BATT	TEGRA_GPIO_PW3
 
 /* Video stuff */
 #define BETALGEUSE_BL_ENB		TEGRA_GPIO_PB5
@@ -88,7 +89,6 @@ int betelgeuse_wifi_status_register(void (*callback)(int , void *), void *);
 * gpio-170 (nvrm_gpio           ) in  hi irq-362 (default)	TEGRA_GPIO_PV2 DOCK_IN_DET
 * gpio-175 (nvrm_gpio           ) in  lo irq-367 (default)	TEGRA_GPIO_PV7 GSensor
 * gpio-178 (nvrm_gpio           ) in  lo irq-370 (default)	TEGRA_GPIO_PW2 USB hub suspend
-* gpio-179 (nvrm_gpio           ) in  hi irq-371 (default)	TEGRA_GPIO_PW3 Low Battery
 * gpio-184 (nvrm_gpio           ) in  hi			TEGRA_GPIO_PX0 s_PCB_ID_GPIO
 * gpio-186 (nvrm_gpio           ) in  lo			TEGRA_GPIO_PX2 s_PCB_ID_GPIO
 * gpio-187 (nvrm_gpio           ) in  hi irq-379 (default)	TEGRA_GPIO_PX3
