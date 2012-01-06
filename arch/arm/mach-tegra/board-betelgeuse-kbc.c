@@ -44,17 +44,21 @@ static struct tegra_kbc_wake_key betelgeuse_wake_cfg[] = {
 		.row = 0,
 		.col = 0,
 	},
+	[1] = {
+		.row = 0,
+		.col = 1,
+	}
 };
 
 static struct tegra_kbc_platform_data betelgeuse_kbc_platform_data = {
-	.debounce_cnt = 20,
-	.repeat_cnt = 100,
-	.scan_timeout_cnt = 100 * 32,
+	.debounce_cnt = 2,
+	.repeat_cnt = 5 * 32,
+	.scan_timeout_cnt = 20 * 32,
 	.plain_keycode = plain_kbd_keycode,
 	.fn_keycode = NULL,
 	.is_filter_keys = false,
 	.is_wake_on_any_key = false,
-	.wake_key_cnt = 1,
+	.wake_key_cnt = 2,
 	.wake_cfg = &betelgeuse_wake_cfg[0],
 };
 
